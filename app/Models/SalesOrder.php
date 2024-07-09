@@ -26,6 +26,9 @@ class SalesOrder extends Model
         'tax_id',
         'country_id',
         'state_id',
-        'account_type_id'
+        'account_type_id',
+        'customer_id',
+        'carrier_id',
+        'carrier_service_id',
     ];
 }

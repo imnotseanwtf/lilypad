@@ -12,12 +12,8 @@ class TaxController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $tax = Tax::firstOrCreate(['name' => $request->taxRateName]);
+        $taxData = Tax::firstOrCreate(['name' => $request->taxRateName]);
 
-        return response()->json(
-            [
-                'tax_id' => $tax->id
-            ]
-        );
+        return response()->json($taxData);
     }
 }

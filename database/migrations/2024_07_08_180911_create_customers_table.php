@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\CustomerStatus;
+use App\Models\PaymentTerms;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->boolean('active_flag');
-            $table->unsignedBigInteger('default_payment_terms_id');
+            // $table->boolean('activeFlag');
+            $table->foreignIdFor(PaymentTerms::class)->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('number');
-            $table->unsignedBigInteger('status_id');
-            $table->boolean('tax_exempt');
-            $table->boolean('to_be_emailed');
-            $table->boolean('to_be_printed');
+            $table->foreignIdFor(CustomerStatus::class)->constrained()->cascadeOnDelete();
+            $table->boolean('taxExempt');
+            $table->boolean('toBeEmailed');
+            $table->boolean('toBePrinted');
             $table->string('url');
             $table->timestamps();
         });

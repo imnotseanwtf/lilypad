@@ -10,14 +10,14 @@ class Customer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'active_flag',
-        'default_payment_terms_id',
+        'activeFlag',
         'name',
         'number',
-        'status_id',
-        'tax_exempt',
-        'to_be_emailed',
-        'to_be_printed',
+        'taxExempt',
+        'toBeEmailed',
+        'toBePrinted',
         'url',
+        'payment_terms_id',
+        'customer_status_id',
     ];
 }

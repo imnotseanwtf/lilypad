@@ -15,10 +15,10 @@ return new class extends Migration
         Schema::create('carrier_services', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Carrier::class)->constrained()->cascadeOnDelete();
-            $table->boolean('active_flag');
+            // $table->boolean('active_flag');
             $table->string('code');
             $table->string('name');
-            $table->boolean('read_only');
+            // $table->boolean('read_only');
             $table->timestamps();
         });
     }

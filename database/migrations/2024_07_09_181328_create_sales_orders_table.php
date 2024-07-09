@@ -1,7 +1,10 @@
 <?php
 
 use App\Models\AccountType;
+use App\Models\Carrier;
+use App\Models\CarrierService;
 use App\Models\Country;
+use App\Models\Customer;
 use App\Models\State;
 use App\Models\Tax;
 use Illuminate\Database\Migrations\Migration;
@@ -32,6 +35,9 @@ return new class extends Migration
             $table->foreignIdFor(Country::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(State::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(AccountType::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Customer::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Carrier::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(CarrierService::class)->constrained()->cascadeOnDelete();
             $table->integer('status');
             $table->timestamps();
         });
