@@ -12,14 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('carrier_services', function (Blueprint $table) {
+        Schema::create('carrierservice', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Carrier::class)->constrained()->cascadeOnDelete();
-            // $table->boolean('active_flag');
-            $table->string('code');
-            $table->string('name');
-            // $table->boolean('read_only');
-            $table->timestamps();
+            $table->boolean('activeFlag')->default(false);
+            $table->foreignId('carrierId')->constrained('carrier')->cascadeOnDelete();
+            $table->string('code')->unique();
+            $table->string('name')->unique();
+            $table->boolean('readOnly')->default(false);
+            $table->index('carrierId', 'Performance');
         });
     }
 

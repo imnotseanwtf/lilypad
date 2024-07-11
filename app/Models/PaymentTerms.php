@@ -9,8 +9,21 @@ class PaymentTerms extends Model
 {
     use HasFactory;
 
-    protected $fillable = 
-    [
+    protected $table = 'payementterms';
+
+    protected $fillable = [
+        'accountingHash',
+        'accountingId',
+        'activeFlag',
+        'dateCreated',
+        'dateLastModified',
+        'defaultTerm',
+        'discount',
+        'discountDays',
         'name',
+        'netDays',
+        'nextMonth',
+        'readOnly',
+        'typeId',
     ];
 }

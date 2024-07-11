@@ -14,12 +14,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('addresses', function (Blueprint $table) {
+        Schema::create('address', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Country::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(State::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(AccountType::class)->constrained()->cascadeOnDelete();
-            $table->timestamps();
+            $table->integer('accountId')->unsigned()->unique();
+            $table->string('name', 41);
+            $table->string('city', 30)->nullable();
+            $table->integer('countryId')->unsigned()->nullable();
+            $table->boolean('defaultFlag');
+            $table->integer('locationGroupId')->unsigned()->nullable();
+            $table->string('addressName', 90)->nullable()->unique();
+            $table->integer('pipelineContactNum')->nullable();
+            $table->integer('stateId')->unsigned()->nullable();
+            $table->string('address', 90);
+            $table->integer('typeID')->unsigned()->nullable();
+            $table->string('zip', 10)->nullable();
+            $table->index(['accountId', 'locationGroupId', 'stateId', 'typeID', 'countryId'], 'Performance');
         });
     }
 

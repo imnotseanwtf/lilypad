@@ -5,14 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SalesMan extends Model
+class SysUser extends Model
 {
     use HasFactory;
-
-
-    protected $fillable = 
-    [
-        'salesman',
-        'salesman_initials',
-    ];
 }

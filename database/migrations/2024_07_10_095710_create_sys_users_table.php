@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create('sysuser', function (Blueprint $table) {
             $table->id();
-            $table->boolean('active_flag');
-            $table->boolean('default_term');
-            $table->string('name');
-            $table->boolean('read_only');
-            $table->unsignedBigInteger('type_id');
             $table->timestamps();
         });
     }
@@ -27,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payments');
+        Schema::dropIfExists('sys_users');
     }
 };

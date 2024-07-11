@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tax;
+use App\Models\TaxRate;
 use Illuminate\Http\Request;
 
-class TaxController extends Controller
+class TaxRateController extends Controller
 {
     /**
      * Handle the incoming request.
      */
     public function __invoke(Request $request)
     {
-        $taxData = Tax::firstOrCreate(['name' => $request->taxRateName]);
+        $taxData = TaxRate::firstOrCreate(['name' => $request->taxRateName]);
 
         return response()->json($taxData);
     }

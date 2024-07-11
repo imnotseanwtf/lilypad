@@ -9,12 +9,18 @@ class Currency extends Model
 {
     use HasFactory;
 
+    protected $table = 'currency';
+
     protected $fillable = [
-        'active_flag',
+        'activeFlag',
         'code',
-        'last_changed_user_id',
+        'dateCreated',
+        'dateLastModified',
+        'excludeFromUpdate',
+        'homeCurrency',
+        'lastChangedUserId',
         'name',
         'rate',
-        'symbol'
+        'symbol',
     ];
 }

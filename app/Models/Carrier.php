@@ -10,14 +10,14 @@ class Carrier extends Model
 {
     use HasFactory;
 
-    protected $fillable =
-    [
+    protected $table = 'carrier';
+
+    protected $fillable = [
+        'activeFlag',
+        'description',
         'name',
-        'description'
+        'readOnly',
+        'scac',
     ];
 
-    public function carrierService(): HasMany
-    {
-        return $this->hasMany(CarrierService::class);
-    }
 }

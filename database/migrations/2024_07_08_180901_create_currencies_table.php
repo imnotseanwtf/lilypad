@@ -12,15 +12,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('currencies', function (Blueprint $table) {
+        Schema::create('currency', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('code');
-            $table->string('symbol');
-            $table->boolean('active_flag');
-            $table->double('rate');
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->timestamps();
+            $table->boolean('activeFlag')->default(false);
+            $table->string('code', 3)->nullable();
+            $table->dateTime('dateCreated')->nullable();
+            $table->dateTime('dateLastModified')->nullable();
+            $table->boolean('excludeFromUpdate')->nullable();
+            $table->boolean('homeCurrency')->nullable();
+            $table->unsignedBigInteger('lastChangedUserId')->nullable(false);
+            $table->string('name', 255)->nullable();
+            $table->integer('rate')->nullable();
+            $table->integer('symbol')->nullable();
+            $table->unique('name', 'u_name');
+            $table->index('lastChangedUserId', 'Performance');
         });
     }
 

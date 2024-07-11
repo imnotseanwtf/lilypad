@@ -9,10 +9,29 @@ class Shipping extends Model
 {
     use HasFactory;
 
+    protected $table = 'ship';
+
     protected $fillable = [
-        'shipTermsId',
-        'shipToCountryId',
-        'shipToStateId',
-        'statusId'
+        'FOBPointId',
+        'billOfLading',
+        'carrierId',
+        'carrierServiceId',
+        'cartonCount',
+        'contact',
+        'dateCreated',
+        'dateLastModified',
+        'dateShipped',
+        'locationGroupId',
+        'note',
+        'num',
+        'orderTypeId',
+        'ownerIsFrom',
+        'poId',
+        'shipToId',
+        'shipmentIdentificationNumber',
+        'shippedBy',
+        'soId',
+        'statusId',
+        'xoId'
     ];
 }

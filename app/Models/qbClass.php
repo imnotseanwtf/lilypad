@@ -9,11 +9,15 @@ class qbClass extends Model
 {
     use HasFactory;
 
-    protected $fillable = [ 
-        'accounting_hash',
-        'accounting_id',
-        'active_flag',
-        'name',
-        'parent_id',
+    protected $table = 'qbclass';
+
+    protected $fillable = [
+        'accountingHash',
+        'accountingId',
+        'activeFlag',
+        'dateCreated',
+        'dateLastModified',
+        'name'
     ];
+    
 }

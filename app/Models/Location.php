@@ -9,13 +9,21 @@ class Location extends Model
 {
     use HasFactory;
 
+    protected $table = 'location';
+
     protected $fillable = [
-        'active_flag',
-        'location_group_id',
+        'activeFlag',
+        'countedAsAvailable',
+        'dateLastModified',
+        'defaultCustomerId',
+        'defaultFlag',
+        'defaultVendorId',
         'description',
+        'locationGroupId',
         'name',
-        'parent_id',
         'pickable',
         'receivable',
+        'sortOrder',
+        'typeId',
     ];
 }

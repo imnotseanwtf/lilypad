@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('taxes', function (Blueprint $table) {
+        Schema::create('locationgroup', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->boolean('activeFlag')->default(0);
+            $table->dateTime('dateLastModified')->nullable();
+            $table->string('name', 30)->unique();
+            $table->integer('qbClassId')->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('taxes');
+        Schema::dropIfExists('location_groups');
     }
 };

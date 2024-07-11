@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('qb_classes', function (Blueprint $table) {
+        Schema::create('qbclass', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('accountingHash', 30)->nullable();
+            $table->string('accountingId', 36)->nullable();
+            $table->boolean('activeFlag');
+            $table->dateTime('dateCreated')->nullable();
+            $table->dateTime('dateLastModified')->nullable();
+            $table->string('name', 31)->nullable()->unique('u_name');
         });
     }
 

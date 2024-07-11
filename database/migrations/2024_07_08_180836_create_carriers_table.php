@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('carriers', function (Blueprint $table) {
+        Schema::create('carrier', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description');
-            $table->timestamps();
+            $table->boolean('activeFlag')->nullable();
+            $table->string('description', 256)->nullable();
+            $table->string('name', 60)->nullable()->unique('u_name');
+            $table->boolean('readOnly')->nullable();
+            $table->string('scac', 4)->nullable();
         });
     }
 

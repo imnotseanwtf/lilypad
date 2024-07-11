@@ -11,15 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('locations', function (Blueprint $table) {
+        Schema::create('location', function (Blueprint $table) {
             $table->id();
-            $table->boolean('active_flag');
-            $table->unsignedBigInteger('location_group_id');
-            $table->text('description');
-            $table->string('name');
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->boolean('pickable');
-            $table->boolean('receivable');
+            $table->boolean('activeFlag')->notnull();
+            $table->boolean('countedAsAvailable')->notnull();
+            $table->datetime('dateLastModified')->nullable();
+            $table->integer('defaultCustomerId')->nullable();
+            $table->boolean('defaultFlag')->notnull();
+            $table->integer('defaultVendorId')->nullable();
+            $table->string('description', 252)->nullable();
+            $table->integer('locationGroupId')->notnull();
+            $table->string('name', 30)->notnull()->unique();
+            $table->boolean('pickable')->notnull();
+            $table->boolean('receivable')->notnull();
+            $table->integer('sortOrder')->nullable();
+            $table->integer('typeId')->notnull();
+            $table->unique(['locationGroupId']);
+            $table->index(['typeId', 'locationGroupId', 'defaultVendorId', 'defaultCustomerId', 'name'], 'Performance');
             $table->timestamps();
         });
     }

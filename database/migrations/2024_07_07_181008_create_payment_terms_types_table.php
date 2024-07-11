@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payment_terms_types', function (Blueprint $table) {
+        Schema::create('paymenttermstype', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->timestamps();
+            $table->string('name', 30)->unique();
         });
     }
 

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('priorities', function (Blueprint $table) {
+        Schema::create('priority', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name', 30)->unique();
             $table->timestamps();
         });
     }
