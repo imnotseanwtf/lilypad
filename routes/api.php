@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SalesOrderController;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ Route::apiResources(
     [
         'sales-order' => SalesOrderController::class,
         'product' => ProductController::class,
+        'customer' => CustomerController::class
     ]
 );
 
