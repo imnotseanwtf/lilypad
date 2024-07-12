@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TaxRate;
+use App\Models\TaxRateType;
 use Illuminate\Http\Request;
 
 class TaxRateController extends Controller
@@ -12,8 +13,19 @@ class TaxRateController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $taxData = TaxRate::firstOrCreate(['name' => $request->taxRateName]);
+        $taxRateType = TaxRateType::firstOrCreate(['name' => $request->taxRateName]);
 
-        return response()->json($taxData);
+        $taxRate = TaxRate::findOrCreate([
+            'activeFlag' => $request->activeflag,
+            'code' => $request->code,
+            'defaultFlag' => $request->defaultFlag,
+            'description' => $request->description,
+            'orderTypeId' => $request->orderTypeId,
+            'rate' => $request->rate,
+            'taxAccountId' => $request->taxAccountId,
+            'typeId' => $taxRateType
+        ]);
+
+        return response()->json($taxRate);
     }
 }

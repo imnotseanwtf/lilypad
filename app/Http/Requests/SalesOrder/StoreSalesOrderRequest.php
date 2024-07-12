@@ -32,7 +32,13 @@ class StoreSalesOrderRequest extends FormRequest
 
             // CARRIER
             'carrierServiceName' => ['nullable', 'integer', 'min:0'],
+            'carrierDescription' => ['nullable', 'string', 'max:255'],
+            'readOnly' => ['boolean', 'nullable'],
+            'carrierCode' => ['string', 'nullable', 'max:255'],
+            'scac' => ['string', 'nullable', 'max:4'],
+
             'cost' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
+
             //CURRENCY
             'currencyName' => ['nullable', 'integer', 'min:0'], // Currency ID
             'currencyRate' => ['nullable', 'numeric'],
@@ -47,10 +53,9 @@ class StoreSalesOrderRequest extends FormRequest
             'dateLastModified' => ['nullable', 'date'],
             'dateRevision' => ['nullable', 'date'],
             'email' => ['string', 'nullable', 'max:256', 'email'],
-            'estimatedTax' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
+
 
             'locationGroupName' => ['nullable', 'integer', 'min:0'], // locationGroupId EXCEPT
-            'mcTotalTax' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
             'note' => ['nullable', 'string'],
             'num' => ['string', 'nullable', 'max:25'],
 
@@ -66,7 +71,7 @@ class StoreSalesOrderRequest extends FormRequest
             'salesmanId' => ['nullable', 'integer', 'min:0'],
             'salesmanFirstName' => ['string', 'nullable', 'max:30'],
             'salesmanLastName' => ['string', 'nullable', 'max:5'],
-            
+
             'shipTermsId' => ['nullable', 'integer', 'in:10,20,30'],
 
             // ShipTo
@@ -79,13 +84,18 @@ class StoreSalesOrderRequest extends FormRequest
 
             'status' => ['nullable', 'integer'],
 
+            // TAX RATE
             'taxRate' => ['nullable', 'numeric'],
             'taxRateName' => ['string', 'nullable', 'max:31'], // Tax Rate ID 
+            'taxRateCode' => ['nullable', 'string', 'max:5'],
+            'taxRateDescription' => ['nullable', 'string', 'max:255'],
+            'mcTotalTax' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
+            'estimatedTax' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
+            'totalIncludesTax' => ['boolean'],
+            'totalTax' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
 
             'toBeEmailed' => ['boolean'],
             'toBePrinted' => ['boolean'],
-            'totalIncludesTax' => ['boolean'],
-            'totalTax' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
             'subTotal' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
             'totalPrice' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
             'typeId' => ['nullable', 'integer', 'min:0'],
@@ -97,7 +107,7 @@ class StoreSalesOrderRequest extends FormRequest
             'activeFlag' => ['boolean'],
             'countedAsAvailable' => ['boolean'],
             'defaultFlag' => ['boolean'],
-            'locationName' => ['string', 'nullable', 'max:50'], 
+            'locationName' => ['string', 'nullable', 'max:50'],
             'pickable' => ['boolean'],
             'receivable' => ['boolean', 'required'],
             'sortOrder' => ['integer', 'nullable', 'min:0', 'max:9999'],
@@ -112,7 +122,7 @@ class StoreSalesOrderRequest extends FormRequest
             // PRODUCT CONTROLLER
             'soItemTypeName' => ['required', 'integer', 'min:0'],
             'productDetails' => ['required', 'string', 'max:255'],
-            
+
             // SALES ORDER ITEM TYPE
             'salesOrderItemTypeName' => ['required', 'string', 'max:30'],
 
