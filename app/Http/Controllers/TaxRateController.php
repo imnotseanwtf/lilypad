@@ -13,17 +13,17 @@ class TaxRateController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $taxRateType = TaxRateType::firstOrCreate(['name' => $request->taxRateName]);
+        $taxRateType = TaxRateType::firstOrCreate(['name' => $request->name]);
 
-        $taxRate = TaxRate::findOrCreate([
-            'activeFlag' => $request->activeflag,
+        $taxRate = TaxRate::firstOrCreate([
+            'activeFlag' => $request->activeFlag,
             'code' => $request->code,
             'defaultFlag' => $request->defaultFlag,
             'description' => $request->description,
             'orderTypeId' => $request->orderTypeId,
             'rate' => $request->rate,
             'taxAccountId' => $request->taxAccountId,
-            'typeId' => $taxRateType
+            'typeId' => $taxRateType->id
         ]);
 
         return response()->json($taxRate);

@@ -19,5 +19,6 @@ class qbClass extends Model
         'dateLastModified',
         'name'
     ];
-    
+
+    public $timestamps = false;
 }

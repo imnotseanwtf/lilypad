@@ -11,8 +11,10 @@ class PaymentTermsType extends Model
 
     protected $table = 'paymenttermstype';
 
-    protected $fillable = 
+    protected $fillable =
     [
         'name',
     ];
+
+    public $timestamps = false;
 }

@@ -36,15 +36,17 @@ class StoreSalesOrderRequest extends FormRequest
             'readOnly' => ['boolean', 'nullable'],
             'carrierCode' => ['string', 'nullable', 'max:255'],
             'scac' => ['string', 'nullable', 'max:4'],
-
             'cost' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
 
             //CURRENCY
             'currencyName' => ['nullable', 'integer', 'min:0'], // Currency ID
             'currencyRate' => ['nullable', 'numeric'],
+            'currencyCode' => ['string', 'nullable', 'max:255'],
+            'excludeFromUpdate' => ['boolean'],
+            'homeCurrency' => ['boolean'],
+            'currencySymbol' => ['integer', 'nullable',],
 
-            'customerContact' => ['string', 'nullable', 'max:30'],
-            'customerPO' => ['string', 'nullable', 'max:25'],
+
             'dateCompleted' => ['nullable', 'date'],
             'dateCreated' => ['nullable', 'date'],
             'dateExpired' => ['nullable', 'date'],
@@ -56,14 +58,21 @@ class StoreSalesOrderRequest extends FormRequest
 
 
             'locationGroupName' => ['nullable', 'integer', 'min:0'], // locationGroupId EXCEPT
-            'note' => ['nullable', 'string'],
             'num' => ['string', 'nullable', 'max:25'],
 
+            // PaymentTerms
             'paymentTermsName' => ['nullable', 'integer', 'min:0'], // paymentTermsID but the name is going to PaymentTermsType EXCEPT
+            'defaultTerm' => ['boolean'],
+            'discount' => ['nullable', 'numeric', 'between:0,999999.99'],
+            'discountDays' => ['nullable', 'integer'],
+            'netDays' => ['nullable', 'integer'],
+            'nextMonth' => ['nullable', 'integer'],
+
             'phone' => ['string', 'nullable', 'max:256'],
 
             'priorityName' => ['nullable', 'integer', 'min:0'], // priorityID EXCEPT
             'quickBookName' => ['nullable', 'integer', 'min:0'], // qbClassId EXCEPT
+
             'residentialFlag' => ['boolean'],
             'revisionNum' => ['nullable', 'integer'],
 
@@ -118,6 +127,8 @@ class StoreSalesOrderRequest extends FormRequest
             // CUSTOMER CONTROLLER
             'customerName' => ['string', 'max:50', 'required'],
             'taxExempt' => ['boolean', 'required'],
+            'customerContact' => ['string', 'nullable', 'max:30'],
+            'customerPO' => ['string', 'nullable', 'max:25'],
 
             // PRODUCT CONTROLLER
             'soItemTypeName' => ['required', 'integer', 'min:0'],
