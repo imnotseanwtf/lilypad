@@ -1,7 +1,9 @@
 <?php
 
+use App\Enums\Enum\SalesOrderItemTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -15,6 +17,17 @@ return new class extends Migration
             $table->id();
             $table->string('name', 30)->unique();
         });
+
+        $salesOrderData = [];
+
+        foreach (SalesOrderItemTypeEnum::cases() as $case) [
+            $salesOrderData[] =
+                [
+                    'name' => $case->value,
+                ]
+        ];
+
+        DB::table('soitemtype')->insert($salesOrderData);
     }
 
     /**

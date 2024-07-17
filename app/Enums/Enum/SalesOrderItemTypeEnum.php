@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Enums;
+namespace App\Enums\Enum;
 
-enum SalesOrderEnum: string
+enum SalesOrderItemTypeEnum: string
 {
     case assocPrice = 'Assoc. Price';
     case creditReturn = 'Credit Return';
