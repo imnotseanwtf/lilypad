@@ -4,7 +4,7 @@ namespace App\Enums\Enum;
 
 enum SalesOrderItemTypeEnum: string
 {
-    case assocPrice = 'Assoc. Price';
+    case assocPric = 'Assoc. Price';
     case creditReturn = 'Credit Return';
     case discountAmount = 'Discount Amount';
     case discountPercentage = 'Discount Percentage';

@@ -23,8 +23,8 @@ class StoreCustomerRequest extends FormRequest
     {
         return [
             'accountId' => ['required', 'integer'],
-            'accountingHash' => ['nullable', 'string', 'max:30'],
-            'accountingId' => ['nullable', 'string', 'max:36'],
+            // 'accountingHash' => ['nullable', 'string', 'max:30'],
+            // 'accountingId' => ['nullable', 'string', 'max:36'],
             'activeFlag' => ['nullable', 'boolean'],
             'creditLimit' => ['nullable', 'numeric'],
             'currencyId' => ['nullable', 'integer'],
