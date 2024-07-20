@@ -15,7 +15,6 @@ class CarrierController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $carrier = Carrier::firstOrCreate([
-            'activeFlag'=> $request->activeFlag,
             'description' => $request->carrierDescription,
             'name' => $request->carrierName,
             'readOnly' => $request->readOnly,
@@ -23,7 +22,6 @@ class CarrierController extends Controller
         ]);
 
         $carrierService = CarrierService::firstOrCreate([
-            'activeFlag'=> $request->activeFlag,
             'carrierId' => $carrier->id,
             'code' => $request->carrierCode,
             'name' => $request->carrierServiceName,
