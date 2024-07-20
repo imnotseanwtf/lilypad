@@ -195,6 +195,9 @@ class SalesOrderController extends Controller
             ]
         );
 
+        $lastNum = optional(SalesOrder::orderBy('id', 'desc')->first())->num;
+        $newNum = $lastNum ? (string)((int)$lastNum + 1) : '10001';
+
         $salesOrder = SalesOrder::create(
             $storeSalesOrderRequest->except(
                 [
@@ -225,7 +228,8 @@ class SalesOrderController extends Controller
                     'taxRateId' => $taxRateResponse->id,
                     'taxRate' => $storeTaxRateRequest->taxRate,
                     'taxRateName' => $storeTaxRateRequest->taxRateName,
-                ]
+                    'num' => $newNum,
+                ]   
         );
 
         // SALES ORDER STATUS

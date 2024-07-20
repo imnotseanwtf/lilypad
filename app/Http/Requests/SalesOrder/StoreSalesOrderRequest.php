@@ -40,8 +40,6 @@ class StoreSalesOrderRequest extends FormRequest
             'email' => ['string', 'nullable', 'max:256', 'email'],
             'customField' => ['string', 'nullable', 'max:255'],
 
-            'num' => ['string', 'nullable', 'max:25'],
-
             'phone' => ['string', 'nullable', 'max:256'],
 
             'priorityName' => ['nullable', 'integer', 'min:0'], // priorityID EXCEPT
