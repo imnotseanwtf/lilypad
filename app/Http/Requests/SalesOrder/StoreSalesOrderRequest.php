@@ -3,6 +3,9 @@
 namespace App\Http\Requests\SalesOrder;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response;
 
 class StoreSalesOrderRequest extends FormRequest
 {
@@ -22,14 +25,20 @@ class StoreSalesOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            // BILL TO ADDRESS CONTROLLER
-            'billToAddress' => ['string', 'nullable', 'max:90'],
-            'billToCity' => ['string', 'nullable', 'max:30'],
-            'billToCountryName' => ['nullable', 'integer', 'min:0'], //Country ID EXCEPT 
-            'billToName' => ['string', 'nullable', 'max:41'],
-            'billToStateName' => ['nullable', 'integer', 'min:0'], //State ID EXCEPT
-            'billToZip' => ['string', 'nullable', 'max:10'],
-
+            'billToAddress' => ['required', 'string', 'max:90'],
+            'billToCity' => ['required', 'string', 'max:30'],
+            'billToCountryId' => ['required', 'integer'],
+            'billToName' => ['required', 'string', 'max:60'],
+            'billToStateId' => ['required', 'integer'],
+            'billToZip' => ['required', 'string', 'max:10'],
+            'carrierId' => ['required', 'integer'],
+            'carrierServiceId' => ['nullable', 'integer'],
+            'cost' => ['nullable', 'numeric'],
+            'currencyId' => ['nullable', 'integer'],
+            'currencyRate' => ['nullable', 'numeric'],
+            'customerContact' => ['nullable', 'string', 'max:30'],
+            'customerId' => ['required', 'integer'],
+            'customerPO' => ['nullable', 'string', 'max:15'],
             'dateCompleted' => ['nullable', 'date'],
             'dateCreated' => ['nullable', 'date'],
             'dateExpired' => ['nullable', 'date'],
@@ -37,54 +46,83 @@ class StoreSalesOrderRequest extends FormRequest
             'dateIssued' => ['nullable', 'date'],
             'dateLastModified' => ['nullable', 'date'],
             'dateRevision' => ['nullable', 'date'],
-            'email' => ['string', 'nullable', 'max:256', 'email'],
-            'customField' => ['string', 'nullable', 'max:255'],
+            'email' => ['nullable', 'email', 'max:256'],
+            'estimatedTax' => ['nullable', 'numeric'],
+            'locationGroupId' => ['nullable', 'integer'],
+            'mcTotalTax' => ['nullable', 'numeric'],
+            'note' => ['nullable', 'string'],
+            'num' => ['required', 'string', 'max:25'],
+            'paymentTermsId' => ['nullable', 'integer'],
+            'phone' => ['nullable', 'string', 'max:256'],
+            'priorityId' => ['required', 'integer', 'in:10,20,30,40,50'],
+            'qbClassId' => ['nullable', 'integer'],
+            'residentialFlag' => ['nullable', 'boolean'],
+            'revisionNum' => ['nullable', 'integer', 'max:15'],
+            'salesman' => ['nullable', 'string', 'max:100'],
+            'salesmanId' => ['nullable', 'integer'],
+            'salesmanInitials' => ['nullable', 'string'],
+            'shipTermsId' => ['nullable', 'integer'],
+            'shipToAddress' => ['required', 'string', 'max:90'],
+            'shipToCity' => ['required', 'string', 'max:30'],
+            'shipToCountryId' => ['required', 'integer'],
+            'shipToName' => ['required', 'string', 'max:60'],
+            'shipToStateId' => ['required', 'integer'],
+            'shipToZip' => ['required', 'string', 'max:10'],
+            'statusId' => ['required', 'integer', 'in:10,20,95'],
+            'taxRate' => ['nullable', 'numeric'],
+            'taxRateId' => ['required', 'integer'],
+            'taxRateName' => ['required', 'string', 'max:31'],
+            'toBeEmailed' => ['nullable', 'boolean'],
+            'toBePrinted' => ['nullable', 'boolean'],
+            'totalIncludesTax' => ['nullable', 'boolean'],
+            'totalTax' => ['nullable', 'numeric'],
+            'subTotal' => ['nullable', 'numeric'],
+            'totalPrice' => ['nullable', 'numeric'],
+            'typeId' => ['nullable', 'integer'],
+            'url' => ['nullable', 'url', 'max:256'],
+            'username' => ['nullable', 'string'],
+            'vendorPO' => ['nullable', 'string', 'max:25'],
 
-            'phone' => ['string', 'nullable', 'max:256'],
-
-            'priorityName' => ['nullable', 'integer', 'min:0'], // priorityID EXCEPT
-            'quickBookName' => ['nullable', 'integer', 'min:0'], // qbClassId EXCEPT
-
-            'residentialFlag' => ['boolean'],
-            'revisionNum' => ['nullable', 'integer'],
-
-            // SalesMan
-            'salesmanId' => ['nullable', 'integer', 'min:0'],
-            'salesmanFirstName' => ['string', 'nullable', 'max:30'],
-            'salesmanLastName' => ['string', 'nullable', 'max:5'],
-
-            'shipTermsId' => ['nullable', 'integer', 'in:10,20,30'],
-
-            // ShipTo
-            'shipToAddress' => ['string', 'nullable', 'max:90'],
-            'shipToCity' => ['string', 'nullable', 'max:30'],
-            'shipToCountryName' => ['nullable', 'integer', 'min:0'], //Country ID EXCEPT  shipToCountryID
-            'shipToName' => ['string', 'nullable', 'max:41'],
-            'shipToStateName' => ['nullable', 'integer', 'min:0'], //State ID EXCEPT shipToStateID
-            'shipToZip' => ['string', 'nullable', 'max:10'],
-
-            'status' => ['nullable', 'integer'],
-
-            'toBeEmailed' => ['boolean'],
-            'toBePrinted' => ['boolean'],
-            'subTotal' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
-            'totalPrice' => ['nullable', 'numeric', 'between:0,999999999999999999.999999999'],
-            'typeId' => ['nullable', 'integer', 'min:0'],
-            'url' => ['string', 'nullable', 'max:256', 'url'],
-            'username' => ['string', 'nullable', 'max:30'],
-            'vendorPO' => ['string', 'nullable', 'max:25'],
-
-            // ACCOUNT TYPE
-            'accountTypeName' => ['string', 'nullable', 'max:50'],
-
-            // CUSTOMER CONTROLLER
-            'taxExempt' => ['boolean', 'required'],
-            'customerContact' => ['string', 'nullable', 'max:30'],
-            'customerPO' => ['string', 'nullable', 'max:25'],
-
-            // PRODUCT CONTROLLER
-            'soItemTypeName' => ['required', 'integer', 'min:0'],
-            'productDetails' => ['required', 'string', 'max:255'],
+            // SALES ORDER ITEMS
+            'items' => ['required', 'array'],
+            'items.*.adjustAmount' => ['nullable', 'numeric'],
+            'items.*.adjustPercentage' => ['nullable', 'numeric'],
+            'items.*.customerPartNum' => ['nullable', 'string'],
+            'items.*.dateLastFulfillment' => ['nullable', 'date'],
+            'items.*.dateScheduledFulfillment' => ['nullable', 'date'],
+            'items.*.description' => ['nullable', 'string'],
+            'items.*.exchangeSOLineItem' => ['nullable', 'integer'],
+            'items.*.itemAdjustId' => ['nullable', 'integer'],
+            'items.*.markupCost' => ['nullable', 'numeric'],
+            'items.*.mcTotalPrice' => ['nullable', 'numeric'],
+            'items.*.note' => ['nullable', 'string'],
+            'items.*.productId' => ['required', 'integer'],
+            'items.*.productNum' => ['nullable', 'string'],
+            'items.*.qtyFulfilled' => ['nullable', 'integer'],
+            'items.*.qtyOrdered' => ['required', 'integer'],
+            'items.*.qtyPicked' => ['nullable', 'integer'],
+            'items.*.qtyToFulfill' => ['nullable', 'integer'],
+            'items.*.revLevel' => ['nullable', 'string'],
+            'items.*.showItemFlag' => ['nullable', 'boolean'],
+            'items.*.soLineItem' => ['nullable', 'integer'],
+            'items.*.taxId' => ['nullable', 'integer'],
+            'items.*.taxableFlag' => ['nullable', 'boolean'],
+            'items.*.totalCost' => ['nullable', 'numeric'],
+            'items.*.typeId' => ['nullable', 'integer'],
+            'items.*.unitPrice' => ['required', 'numeric'],
+            'items.*.uomId' => ['nullable', 'integer']
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json(
+            [
+                'success' => false,
+                'message' => 'Validation errors',
+                'data' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY
+        ));
     }
 }

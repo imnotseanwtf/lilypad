@@ -17,7 +17,7 @@ class Address extends Model
         'city',
         'countryId',
         'defaultFlag',
-        'locationGroupId',
+        'locationGroupId', // NULLABLE
         'addressName',
         'pipelineContactNum',
         'stateId',

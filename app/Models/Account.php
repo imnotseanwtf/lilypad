@@ -12,7 +12,7 @@ class Account extends Model
     protected $table = 'account';
 
     protected $fillable =[
-        'typId'
+        'typeId'
     ];
 
     public $timestamps = false;

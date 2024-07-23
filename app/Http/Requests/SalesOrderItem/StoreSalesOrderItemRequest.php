@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\SalesOrderItem;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response;
 
 class StoreSalesOrderItemRequest extends FormRequest
 {
@@ -22,13 +25,19 @@ class StoreSalesOrderItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // SALES ORDER ITEM TYPE
-            'salesOrderItemTypeName' => ['required', 'string', 'max:30'],
-
-            // SALES ORDER ITEM
-            'note' => ['string', 'nullable', 'max:255'],
-            'salesOrderLineItem' => ['int', 'nullable', 'max:255'],
-            'salesOrderStatus' => ['required', 'string', 'max:30'],
+            
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json(
+            [
+                'success' => false,
+                'message' => 'Validation errors',
+                'data' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY
+        ));
     }
 }

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
@@ -19,21 +20,19 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreProductRequest $storeProductRequest): JsonResponse
     {
         $product = Product::create($storeProductRequest->validated());
 
-        return response()->json($product, 201);
+        return response()->json(
+            [
+                'product' => $product,
+                'message' => 'Product Create Successfully!'
+            ],
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -41,15 +40,7 @@ class ProductController extends Controller
      */
     public function show(Product $product): JsonResponse
     {
-        return response()->json($product);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return response()->json($product, Response::HTTP_OK);
     }
 
     /**
@@ -59,7 +50,13 @@ class ProductController extends Controller
     {
         $product->update($updateProductRequest->validated());
 
-        return response()->json($product);
+        return response()->json(
+            [
+                'product' => $product,
+                'message' => 'Product Updated Successfully!'
+            ],
+            Response::HTTP_OK
+        );
     }
 
     /**
@@ -69,8 +66,11 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        return response()->json([
-            "message" => "success",
-        ]);
+        return response()->json(
+            [
+                'message' => 'Product Deleted Successfully!'
+            ],
+            Response::HTTP_OK
+        );
     }
 }

@@ -45,4 +45,6 @@ class SalesOrderItems extends Model
         'unitPrice', // nullable
         'uomId', // nullable
     ];
+
+    public $timestamps = false;
 }

@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Requests\SalesOrder;
+namespace App\Http\Requests\AccountType;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Symfony\Component\HttpFoundation\Response;
 
-class UpdateSalesOrderRequest extends FormRequest
+class UpdateAccountTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -25,7 +25,7 @@ class UpdateSalesOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-       
+            //
         ];
     }
 
