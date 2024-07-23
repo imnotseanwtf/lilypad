@@ -49,18 +49,20 @@ class CustomerController extends Controller
             ]);
 
         $address = Address::create(
-            [
-                'accountId' => $account->id,
-                'name' => $storeCustomerRequest->name,
-                'countryId' => $storeCustomerRequest->countryId,
-                'locationGroupId' => $storeCustomerRequest->locationGroupId,
-                'addressName' => $storeCustomerRequest->addressName,
-                'pipelineContactNum' => $storeCustomerRequest->pipelineContactNum,
-                'stateId' => $storeCustomerRequest->stateId,
-                'address' => $storeCustomerRequest->address,
-                'typeId' => $storeCustomerRequest->typeId,
-                'zip' => $storeCustomerRequest->zip,
-            ]
+            $storeCustomerRequest->only([
+                'name',
+                'countryId',
+                'locationGroupId',
+                'addressName',
+                'pipelineContactNum',
+                'stateId',
+                'address',
+                'typeId',
+                'zip'
+            ]) +
+                [
+                    'accountId' => $account->id
+                ]
         );
 
         return response()->json(
@@ -88,9 +90,9 @@ class CustomerController extends Controller
     {
         $account = Account::findOrFail($customer->accountId);
         $address = Address::where('accountId', $account->id)->firstOrFail();
-    
+
         $account->update(['typeId' => $updateCustomerRequest->accountTypeId]);
-    
+
         $customer->update($updateCustomerRequest->except(
             [
                 'accountTypeId',
@@ -110,7 +112,7 @@ class CustomerController extends Controller
                 'accountId' => $account->id,
                 'name' => $updateCustomerRequest->customerName,
             ]);
-    
+
         $address->update(
             [
                 'accountId' => $account->id,
@@ -125,7 +127,7 @@ class CustomerController extends Controller
                 'zip' => $updateCustomerRequest->zip,
             ]
         );
-    
+
         return response()->json(
             [
                 'customer' => $customer,
@@ -135,7 +137,7 @@ class CustomerController extends Controller
             Response::HTTP_OK
         );
     }
-    
+
     /**
      * Remove the specified resource from storage.
      */

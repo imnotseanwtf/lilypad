@@ -6,8 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SalesOrder\StoreSalesOrderRequest;
 use App\Http\Requests\SalesOrder\UpdateSalesOrderRequest;
 use App\Http\Requests\SalesOrderItem\StoreSalesOrderItemRequest;
+use App\Http\Requests\SalesOrderItem\UpdateSalesOrderItemRequest;
+use App\Models\Carrier;
+use App\Models\CarrierService;
+use App\Models\Country;
+use App\Models\Customer;
+use App\Models\qbClass;
 use App\Models\SalesOrder;
 use App\Models\SalesOrderItems;
+use App\Models\SalesOrderStatus;
+use App\Models\State;
+use App\Models\TaxRate;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,15 +33,66 @@ class SalesOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSalesOrderRequest $storeSalesOrderRequest): JsonResponse
+    public function store(StoreSalesOrderRequest $storeSalesOrderRequest, StoreSalesOrderItemRequest $storeSalesOrderItemRequest): JsonResponse
     {
-        $salesOrder = SalesOrder::create($storeSalesOrderRequest->except('items'));
+        // BILL TO
+        $billToCountry = Country::firstOrCreate(['name' => $storeSalesOrderRequest->billToCountry]);
+        $billToState = State::firstOrCreate(['name' => $storeSalesOrderRequest->billToState]);
+
+        // SHIP TO
+        $shipToCountry = Country::firstOrCreate(['name' => $storeSalesOrderRequest->shipToCountry]);
+        $shipToState = State::firstOrCreate(['name' => $storeSalesOrderRequest->shipToState]);
+
+        // qbclass
+        $qbclass = qbClass::firstOrCreate(['name' => $storeSalesOrderRequest->quickBookClassName]);
+
+        // Status
+        $status = SalesOrderStatus::firstOrCreate(['name' => $storeSalesOrderRequest->status]);
+
+        // Carrier
+        $carrier = Carrier::where('name', $storeSalesOrderRequest->carrierName)->first();
+        // $carrierService = CarrierService::where('name', $storeSalesOrderRequest->carrierService)->first();
+
+        // Tax Rate
+        // $taxRate = TaxRate::where('name', $storeSalesOrderRequest->taxRateName)->first();
+
+        // CUSTOMER
+        // $customer = Customer::where('name', $storeSalesOrderRequest->customerName)->first();
+
+        // SoNum
+        $lastNum = optional(SalesOrder::orderBy('id', 'desc')->first())->num;
+        $newNum = $lastNum ? (string)((int)$lastNum + 1) : '10001';
+
+        $salesOrder = SalesOrder::create(
+            $storeSalesOrderRequest->except('items') +
+                [
+                    'billToCountryId' => $billToCountry->id,
+                    'billToStateId' => $billToState->id,
+
+                    'shipToCountryId' => $shipToCountry->id,
+                    'shipToStateId' => $shipToState->id,
+
+                    // 'taxRateId' => $taxRate->id,
+                    // 'taxRate' => $taxRate->rate,
+
+                    'statusId' => $status->id,
+
+                    // 'customerId' => $customer->id,
+
+                    'carrierId' => $carrier->id,
+                    // 'carrierServiceId' => $carrierService->id,
+
+                    'residentialFlag' => $storeSalesOrderRequest->shipToResidential,
+                    'qbClassId' => $qbclass->id,
+                    'num' => $newNum,
+                ]
+        );
 
         $salesOrderItems = [];
 
-        foreach ($storeSalesOrderRequest->validated()['items'] as $item) {
+        foreach ($storeSalesOrderItemRequest->validated()['items'] as $item) {
             $item['soId'] = $salesOrder->id;
-            $item['statusId'] = $storeSalesOrderRequest->statusId;
+            $item['statusId'] = $status->id;
             $salesOrderItems[] = SalesOrderItems::create($item);
         }
 
@@ -57,45 +117,83 @@ class SalesOrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSalesOrderRequest $updateSalesOrderRequest, SalesOrder $salesOrder): JsonResponse
+    public function update(UpdateSalesOrderRequest $updateSalesOrderRequest, UpdateSalesOrderItemRequest $updateSalesOrderItemRequest, SalesOrder $salesOrder): JsonResponse
     {
-        $existingItems = SalesOrderItems::where('soId', $salesOrder->id)->get();
-    
-        $salesOrder->update($updateSalesOrderRequest->except('items'));
-    
-        $updatedItems = [];
-        $newItems = $updateSalesOrderRequest->validated()['items'];
-    
-        foreach ($newItems as $item) {
+        // BILL TO
+        $billToCountry = Country::firstOrCreate(['name' => $updateSalesOrderRequest->billToCountry]);
+        $billToState = State::firstOrCreate(['name' => $updateSalesOrderRequest->billToState]);
+
+        // SHIP TO
+        $shipToCountry = Country::firstOrCreate(['name' => $updateSalesOrderRequest->shipToCountry]);
+        $shipToState = State::firstOrCreate(['name' => $updateSalesOrderRequest->shipToState]);
+
+        // qbclass
+        $qbclass = qbClass::firstOrCreate(['name' => $updateSalesOrderRequest->quickBookClassName]);
+
+        // Status
+        $status = SalesOrderStatus::firstOrCreate(['name' => $updateSalesOrderRequest->status]);
+
+        // Carrier
+        $carrier = Carrier::where('name', $updateSalesOrderRequest->carrierName)->first();
+        // $carrierService = CarrierService::where('name', $updateSalesOrderRequest->carrierService)->first();
+
+        // Tax Rate
+        // $taxRate = TaxRate::where('name', $updateSalesOrderRequest->taxRateName)->first();
+
+        $salesOrder->update(
+            $updateSalesOrderRequest->except('items') +
+                [
+                    'billToCountryId' => $billToCountry->id,
+                    'billToStateId' => $billToState->id,
+
+                    'shipToCountryId' => $shipToCountry->id,
+                    'shipToStateId' => $shipToState->id,
+
+                    // 'taxRateId' => $taxRate->id,
+                    // 'taxRate' => $taxRate->rate,
+
+                    'statusId' => $status->id,
+
+                    'carrierId' => $carrier->id,
+                    // 'carrierServiceId' => $carrierService->id,
+
+                    'residentialFlag' => $updateSalesOrderRequest->shipToResidential,
+                    'qbClassId' => $qbclass->id,
+                ]
+        );
+
+        // Update or create sales order items
+        $updatedSalesOrderItems = [];
+
+        foreach ($updateSalesOrderItemRequest->validated()['items'] as $item) {
+            $item['soId'] = $salesOrder->id;
+            $item['statusId'] = $status->id;
+
             if (isset($item['id'])) {
-                $existingItem = $existingItems->where('id', $item['id'])->first();
-                if ($existingItem) {
-                    $existingItem->update($item);
-                    $updatedItems[] = $existingItem;
-                }
+                $salesOrderItem = SalesOrderItems::findOrFail($item['id']);
+                $salesOrderItem->update($item);
+                $updatedSalesOrderItems[] = $salesOrderItem;
             } else {
-                $item['soId'] = $salesOrder->id;
-                $item['statusId'] = $updateSalesOrderRequest->statusId;
-                $newItem = SalesOrderItems::create($item);
-                $updatedItems[] = $newItem;
+                $updatedSalesOrderItems[] = SalesOrderItems::create($item);
             }
         }
-    
-        $itemsToDelete = $existingItems->whereNotIn('id', array_column($newItems, 'id'));
-        foreach ($itemsToDelete as $itemToDelete) {
-            $itemToDelete->delete();
-        }
-    
+
+        // Delete items that are not in the update request
+        $existingItemIds = array_column($updateSalesOrderItemRequest->validated()['items'], 'id');
+        SalesOrderItems::where('soId', $salesOrder->id)
+            ->whereNotIn('id', $existingItemIds)
+            ->delete();
+
         return response()->json(
             [
                 'salesOrder' => $salesOrder,
-                'salesOrderItems' => $updatedItems,
+                'salesOrderItems' => $updatedSalesOrderItems,
                 'message' => 'Sales Order Updated Successfully!',
             ],
             Response::HTTP_OK
         );
     }
-    
+
 
     /**
      * Remove the specified resource from storage.

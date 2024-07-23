@@ -14,7 +14,7 @@ class UpdateSalesOrderItemRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,7 +25,34 @@ class UpdateSalesOrderItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            // SALES ORDER ITEMS
+            'items' => ['required', 'array'],
+            'items.*.adjustAmount' => ['nullable', 'numeric'],
+            'items.*.adjustPercentage' => ['nullable', 'numeric'],
+            'items.*.customerPartNum' => ['nullable', 'string'],
+            'items.*.dateLastFulfillment' => ['nullable', 'date'],
+            'items.*.dateScheduledFulfillment' => ['nullable', 'date'],
+            'items.*.description' => ['nullable', 'string'],
+            'items.*.exchangeSOLineItem' => ['nullable', 'integer'],
+            'items.*.itemAdjustId' => ['nullable', 'integer'],
+            'items.*.markupCost' => ['nullable', 'numeric'],
+            'items.*.mcTotalPrice' => ['nullable', 'numeric'],
+            'items.*.note' => ['nullable', 'string'],
+            'items.*.productId' => ['required', 'integer'],
+            'items.*.productNum' => ['nullable', 'string'],
+            'items.*.qtyFulfilled' => ['nullable', 'integer'],
+            'items.*.qtyOrdered' => ['required', 'integer'],
+            'items.*.qtyPicked' => ['nullable', 'integer'],
+            'items.*.qtyToFulfill' => ['nullable', 'integer'],
+            'items.*.revLevel' => ['nullable', 'string'],
+            'items.*.showItemFlag' => ['nullable', 'boolean'],
+            'items.*.soLineItem' => ['nullable', 'integer'],
+            'items.*.taxId' => ['nullable', 'integer'],
+            'items.*.taxableFlag' => ['nullable', 'boolean'],
+            'items.*.totalCost' => ['nullable', 'numeric'],
+            'items.*.typeId' => ['nullable', 'integer'],
+            'items.*.unitPrice' => ['required', 'numeric'],
+            'items.*.uomId' => ['nullable', 'integer']
         ];
     }
 
