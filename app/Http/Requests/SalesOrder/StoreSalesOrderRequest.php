@@ -25,70 +25,67 @@ class StoreSalesOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            [
-                // General Information
-                'flag' => ['boolean'], // Flag
-                'status' => ['nullable', 'integer'], // Status
-                'customerName' => ['nullable', 'string', 'max:100'], // CustomerName
-                'customerContact' => ['string', 'nullable', 'max:30'], // CustomerContact
+            // General Information
+            'flag' => ['required', 'boolean'], // Flag
+            'status' => ['required', 'integer'], // Status
+            'customerName' => ['required', 'string', 'max:100'], // CustomerName
+            'customerContact' => ['required', 'string', 'max:30'], // CustomerContact
 
-                // Billing Information
-                'billToName' => ['string', 'nullable', 'max:41'], // BillToName
-                'billToAddress' => ['string', 'nullable', 'max:90'], // BillToAddress
-                'billToCity' => ['string', 'nullable', 'max:30'], // BillToCity
-                'billToState' => ['nullable', 'string', 'min:0'], // BillToState
-                'billToZip' => ['string', 'nullable', 'max:10'], // BillToZip
-                'billToCountry' => ['nullable', 'integer', 'min:0'], // BillToCountry
+            // Billing Information
+            'billToName' => ['required', 'string', 'max:41'], // BillToName
+            'billToAddress' => ['required', 'string', 'max:90'], // BillToAddress
+            'billToCity' => ['required', 'string', 'max:30'], // BillToCity
+            'billToState' => ['required', 'string'], // BillToState
+            'billToZip' => ['required', 'string', 'max:10'], // BillToZip
+            'billToCountry' => ['required', 'string'], // BillToCountry
 
-                // Shipping Information
-                'shipToName' => ['string', 'nullable', 'max:41'], // ShipToName
-                'shipToAddress' => ['string', 'nullable', 'max:90'], // ShipToAddress
-                'shipToCity' => ['string', 'nullable', 'max:30'], // ShipToCity
-                'shipToState' => ['nullable', 'string', 'min:0'], // ShipToState
-                'shipToZip' => ['string', 'nullable', 'max:10'], // ShipToZip
-                'shipToCountry' => ['nullable', 'integer', 'min:0'], // ShipToCountry
-                'shipToResidential' => ['boolean'], // ShipToResidential
+            // Shipping Information
+            'shipToName' => ['required', 'string', 'max:41'], // ShipToName
+            'shipToAddress' => ['required', 'string', 'max:90'], // ShipToAddress
+            'shipToCity' => ['required', 'string', 'max:30'], // ShipToCity
+            'shipToState' => ['required', 'string'], // ShipToState
+            'shipToZip' => ['required', 'string', 'max:10'], // ShipToZip
+            'shipToCountry' => ['required', 'string'], // ShipToCountry
+            'shipToResidential' => ['required', 'boolean'], // ShipToResidential
 
-                // Carrier Information
-                'carrierName' => ['nullable', 'string', 'max:100'], // CarrierName
-                'carrierService' => ['nullable', 'string', 'max:100'], // CarrierService
+            // Carrier Information
+            'carrierName' => ['required', 'string', 'max:100'], // CarrierName
+            'carrierService' => ['required', 'string', 'max:100'], // CarrierService
 
-                // Tax and Priority Information
-                'taxRateName' => ['nullable', 'string', 'max:100'], // TaxRateName
-                'priorityId' => ['nullable', 'integer', 'min:0'], // PriorityId
+            // Tax and Priority Information
+            'taxRateName' => ['required', 'string', 'max:100'], // TaxRateName
+            'priorityId' => ['required', 'integer', 'min:0'], // PriorityId
 
-                // Order Information
-                'poNum' => ['nullable', 'string', 'max:50'], // PONum
-                'vendorPONum' => ['string', 'nullable', 'max:25'], // VendorPONum
-                'date' => ['nullable', 'date'], // Date
-                'orderDateScheduled' => ['nullable', 'date'], // OrderDateScheduled
-                'dateExpired' => ['nullable', 'date'], // DateExpired
+            // Order Information
+            'poNum' => ['required', 'string', 'max:50'], // PONum
+            'vendorPONum' => ['required', 'string', 'max:25'], // VendorPONum
+            'date' => ['required', 'date'], // Date
+            'orderDateScheduled' => ['required', 'date'], // OrderDateScheduled
+            'dateExpired' => ['required', 'date'], // DateExpired
 
-                // Sales Information
-                'salesman' => ['nullable', 'string', 'max:100'], // Salesman
-                'shippingTerms' => ['nullable', 'integer', 'in:10,20,30'], // ShippingTerms
-                'paymentTerms' => ['nullable', 'string', 'max:50'], // PaymentTerms
-                'fob' => ['nullable', 'string', 'max:50'], // FOB
-                'note' => ['nullable', 'string', 'max:500'], // Note
+            // Sales Information
+            'salesman' => ['required', 'string', 'max:100'], // Salesman
+            'shippingTerms' => ['required', 'integer', 'in:10,20,30'], // ShippingTerms
+            'paymentTerms' => ['required', 'string', 'max:50'], // PaymentTerms
+            'fob' => ['required', 'string', 'max:50'], // FOB
+            'note' => ['required', 'string', 'max:500'], // Note
 
-                // QuickBooks and Location Information
-                'quickBooksClassName' => ['nullable', 'integer', 'min:0'], // QuickBooksClassName
-                'locationGroupName' => ['nullable', 'string', 'max:100'], // LocationGroupName
+            // QuickBooks and Location Information
+            'quickBooksClassName' => ['required', 'integer', 'min:0'], // QuickBooksClassName
+            'locationGroupName' => ['required', 'string', 'max:100'], // LocationGroupName
 
-                // Contact Information
-                'phone' => ['string', 'nullable', 'max:256'], // Phone
-                'email' => ['string', 'nullable', 'max:256', 'email'], // Email
+            // Contact Information
+            'phone' => ['required', 'string', 'max:256'], // Phone
+            'email' => ['required', 'string', 'max:256', 'email'], // Email
 
-                // URL
-                'url' => ['string', 'nullable', 'max:256', 'url'], // URL
+            // URL
+            'url' => ['required', 'string', 'max:256', 'url'], // URL
 
-                // Category
-                'category' => ['nullable', 'string', 'max:100'], // Category
+            // Category
+            'category' => ['required', 'string', 'max:100'], // Category
 
-                // Custom Field
-                'customField' => ['string', 'nullable', 'max:255'], // CF-Custom
-            ]
-
+            // Custom Field
+            'customField' => ['required', 'string', 'max:255'], // CF-Custom
         ];
     }
 
