@@ -7,17 +7,15 @@ use App\Http\Controllers\V1\SalesOrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::apiResources([
-    'sales-order' => SalesOrderController::class,
-    'product' => ProductController::class,
-    'customer' => CustomerController::class,
-    'part' => PartController::class,
-]);
-
 Route::get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:api')->group(function () {
-    
+Route::prefix('v1')->middleware('auth:api')->group(function () {
+    Route::apiResources([
+        'sales-order' => SalesOrderController::class,
+        'product' => ProductController::class,
+        'customer' => CustomerController::class,
+        'part' => PartController::class,
+    ]);
 });
