@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\DataTables\CustomerDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
@@ -9,6 +10,7 @@ use App\Models\Account;
 use App\Models\Address;
 use App\Models\Customer;
 use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class CustomerController extends Controller
@@ -16,9 +18,14 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(CustomerDataTable $customerDataTable): JsonResponse | View
     {
-        //
+        return $customerDataTable->render('customer.index');
+    }
+
+    public function create(): View
+    {
+        return view('customer.create');
     }
 
     /**

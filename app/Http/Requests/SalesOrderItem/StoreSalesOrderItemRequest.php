@@ -25,45 +25,36 @@ class StoreSalesOrderItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // SALES ORDER ITEMS
             'items' => ['required', 'array'],
-            'items.*.adjustAmount' => ['required', 'numeric'],
-            'items.*.adjustPercentage' => ['required', 'numeric'],
-            'items.*.customerPartNum' => ['required', 'string'],
-            'items.*.dateLastFulfillment' => ['required', 'date'],
-            'items.*.dateScheduledFulfillment' => ['required', 'date'],
-            'items.*.description' => ['required', 'string'],
-            'items.*.itemAdjustId' => ['required', 'integer'],
-            'items.*.markupCost' => ['required', 'numeric'],
-            'items.*.mcTotalPrice' => ['required', 'numeric'],
-            'items.*.note' => ['required', 'string'],
-            'items.*.productId' => ['required', 'integer'],
-            'items.*.productNum' => ['required', 'string'],
-            'items.*.qtyFulfilled' => ['required', 'integer'],
+            'items.*.Flag' => ['required', 'boolean'],
+            'items.*.productNum' => ['nullable', 'string', 'max:70'],
+            'items.*.description' => ['nullable', 'string', 'max:256'],
             'items.*.qtyOrdered' => ['required', 'integer'],
-            'items.*.qtyPicked' => ['required', 'integer'],
-            'items.*.qtyToFulfill' => ['required', 'integer'],
-            'items.*.revLevel' => ['required', 'string'],
-            'items.*.showItemFlag' => ['required', 'boolean'],
-            'items.*.soLineItem' => ['required', 'integer'],
-            'items.*.taxId' => ['required', 'integer'],
+            'items.*.uomId' => ['nullable', 'integer'],
+            'items.*.unitPrice' => ['nullable', 'numeric', 'digits_between:1,28'],
             'items.*.taxableFlag' => ['required', 'boolean'],
-            'items.*.totalCost' => ['required', 'numeric'],
+            'items.*.taxRateCode' => ['required', 'integer'],
+            'items.*.note' => ['required', 'string'],
+            'items.*.qbClassId' => ['nullable', 'integer'],
+            'items.*.dateScheduledFulfillment' => ['required', 'date'],
+            'items.*.showItemFlag' => ['required', 'boolean'],
             'items.*.typeId' => ['required', 'integer'],
-            'items.*.unitPrice' => ['required', 'numeric'],
-            'items.*.uomId' => ['required', 'integer']
+            'items.*.revLevel' => ['required', 'string'],
+            'items.*.customerPartNum' => ['nullable', 'string', 'max:70'],
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json(
-            [
-                'success' => false,
-                'message' => 'Validation errors',
-                'data' => $validator->errors()
-            ],
-            Response::HTTP_UNPROCESSABLE_ENTITY
-        ));
+        throw new HttpResponseException(
+            response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Validation errors',
+                    'data' => $validator->errors(),
+                ],
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+            ),
+        );
     }
 }

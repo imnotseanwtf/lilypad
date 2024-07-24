@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\SalesOrderController;
+use App\Http\Controllers\V1\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,10 +11,14 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::resource('sales-order', SalesOrderController::class);
-
 Route::middleware('auth')->group(function () {
     Route::view('about', 'about')->name('about');
+
+    Route::resources(
+        [
+            'customer' => CustomerController::class,
+        ]
+    );
 
     Route::get('users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
 
