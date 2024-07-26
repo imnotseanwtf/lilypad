@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SalesOrderItem\StoreSalesOrderItemRequest;
 use App\Http\Requests\SalesOrderItem\UpdateSalesOrderItemRequest;
+use App\Models\qbClass;
 use App\Models\SalesOrderItems;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,18 +29,36 @@ class SalesOrderItemController extends Controller
         $salesOrderItems = [];
 
         foreach ($storeSalesOrderItemRequest->validated()['items'] as $item) {
-            $item['taxableFlag'] = $storeSalesOrderItemRequest->Flas;
+            $item['typeId'] = $item['soItemTypeId'];
+            $item['oumId'] = $item['uom'];
+            $item['productNum'] = $item['productNumber'];
+            $item['showItemFlag'] = $item['showItem'];
+            $item['taxRateCode'] = $item['taxCode'];
+            $item['taxableFlag'] = $item['taxable'];
+            $item['customerPartNum'] = $item['customerPartNumber'];
+            $item['description'] = $item['productDescription'];
+            $item['qtyOrdered'] = $item['productQuantity'];
+            $item['unitPrice'] = $item['productPrice'];
+            $item['dateScheduledFulfillment'] = $item['itemScheduledFulfillment'];
+            $item['revLevel'] = $item['revisionLevel'];
+
+            $qbClass = qbClass::firstOrCreate(
+                ['name' => $item['itemQuickBooksClassName']]
+            );
+            $item['qbClassId'] = $qbClass->id;
+
             $salesOrderItems[] = SalesOrderItems::create($item);
         }
 
         return response()->json(
             [
                 'data' => $salesOrderItems,
-                'message' => 'Sales Order Item Created Succesfully!'
+                'message' => 'Sales Order Item Created Successfully!'
             ],
             Response::HTTP_CREATED
         );
     }
+
 
     /**
      * Display the specified resource.
@@ -54,7 +73,18 @@ class SalesOrderItemController extends Controller
      */
     public function update(UpdateSalesOrderItemRequest $updateSalesOrderItemRequest, SalesOrderItems $salesOrderItems): JsonResponse
     {
-        $salesOrderItems->update($updateSalesOrderItemRequest->validated());
+        $salesOrderItems->update(
+            $updateSalesOrderItemRequest->validated() +
+                [
+                    'typeId' => $updateSalesOrderItemRequest->soItemtypeId,
+                    'description' => $updateSalesOrderItemRequest->productDescription,
+                    'qtyOrdered' => $updateSalesOrderItemRequest->productQuantity,
+                    'unitPrice' => $updateSalesOrderItemRequest->productPrice,
+                    'dateScheduledFulfillment' => $updateSalesOrderItemRequest->itemScheduledFulfillment,
+                    'revLevel' => $updateSalesOrderItemRequest->revisionLevel,
+                ]
+        );
+
 
         return response()->json(
             [

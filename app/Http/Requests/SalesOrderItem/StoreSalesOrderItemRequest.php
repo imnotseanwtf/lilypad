@@ -26,23 +26,23 @@ class StoreSalesOrderItemRequest extends FormRequest
     {
         return [
             'items' => ['required', 'array'],
-            'items.*.Flag' => ['required', 'boolean'],
+            'items.*.flag' => ['required', 'boolean'],
+            'items.*.soItemTypeId' => ['required', 'integer', 'exist:soitemtype,id'], // typeId
             'items.*.soId' => ['required', 'integer', 'exists:so,id'],
             'items.*.statusId' => ['required' , 'integer'],
-            'items.*.productNum' => ['nullable', 'string', 'max:70'],
-            'items.*.description' => ['nullable', 'string', 'max:256'],
-            'items.*.qtyOrdered' => ['required', 'integer'],
-            'items.*.uomId' => ['nullable', 'integer'],
-            'items.*.unitPrice' => ['nullable', 'numeric'],
-            'items.*.taxableFlag' => ['required', 'boolean'],
-            'items.*.taxRateCode' => ['required', 'integer'],
+            'items.*.productNumber' => ['nullable', 'string', 'max:70'], // productNum
+            'items.*.productDescription' => ['nullable', 'string', 'max:256'], // description
+            'items.*.productQuantity' => ['required', 'integer'], // qtyOrdered
+            'items.*.uom' => ['nullable', 'integer'],
+            'items.*.productPrice' => ['nullable', 'numeric'], // unitPrice
+            'items.*.taxable' => ['required', 'boolean'],
+            'items.*.taxCode' => ['required', 'integer'],
             'items.*.note' => ['required', 'string'],
-            'items.*.qbClassId' => ['nullable', 'integer'],
-            'items.*.dateScheduledFulfillment' => ['required', 'date'],
-            'items.*.showItemFlag' => ['required', 'boolean'],
-            'items.*.typeId' => ['required', 'integer'],
-            'items.*.revLevel' => ['required', 'string'],
-            'items.*.customerPartNum' => ['nullable', 'string', 'max:70'],
+            'items.*.itemQuickBooksClassName' => ['nullable', 'integer'],  //qbClassId
+            'items.*.itemScheduledFulfillment' => ['required', 'date'], //dateScheduledFulfillment
+            'items.*.showItem' => ['required', 'boolean'],
+            'items.*.revisionLevel' => ['required', 'string'], // revLevel
+            'items.*.customerPartNumber' => ['nullable', 'string', 'max:70'],
         ];
     }
 

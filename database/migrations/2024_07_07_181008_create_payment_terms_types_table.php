@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -15,6 +16,17 @@ return new class extends Migration
             $table->id();
             $table->string('name', 30)->unique();
         });
+
+        DB::table('paymenttermstype')->insert(
+            [
+                ['id' => 40, 'name' => 'CCD'],
+                ['id' => 30, 'name' => 'CIA'],
+                ['id' => 20, 'name' => 'COD'],
+                ['id' => 60, 'name' => 'MONTH'],
+                ['id' => 10, 'name' => 'NET'],
+                ['id' => 50, 'name' => 'NONE'],
+            ]
+        );
     }
 
     /**
