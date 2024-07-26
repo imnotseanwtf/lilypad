@@ -143,8 +143,8 @@ class SalesOrderController extends Controller
         return response()->json(
             [
                 'salesOrder' => $salesOrder,
-                'customer' => $customer,
-                'address' => $address,
+                'customer' => $customer ?? null,
+                'address' => $address ?? null,
                 'message' => 'Sales Order Created Successfully!',
             ],
             Response::HTTP_CREATED
