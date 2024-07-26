@@ -36,7 +36,7 @@ class SalesOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSalesOrderRequest $storeSalesOrderRequest, StoreSalesOrderItemRequest $storeSalesOrderItemRequest, StoreCustomerRequest $storeCustomerRequest): JsonResponse
+    public function store(StoreSalesOrderRequest $storeSalesOrderRequest, StoreCustomerRequest $storeCustomerRequest): JsonResponse
     {
         // BILL TO
         $billToCountry = Country::firstOrCreate(['name' => $storeSalesOrderRequest->billToCountry]);
@@ -128,17 +128,9 @@ class SalesOrderController extends Controller
                 ]
         );
 
-        $salesOrderItems = [];
-
-        foreach ($storeSalesOrderItemRequest->except('soId')['items'] as $item) {
-            $item['taxableFlag'] = $storeSalesOrderItemRequest->Flag;
-            $salesOrderItems[] = SalesOrderItems::create($item);
-        }
-
         return response()->json(
             [
                 'salesOrder' => $salesOrder,
-                'salesOrderItem' => $salesOrderItems,
                 'customer' => $customer,
                 'address' => $address,
                 'message' => 'Sales Order Created Successfully!',

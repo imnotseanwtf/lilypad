@@ -50,13 +50,13 @@ class StoreCustomerRequest extends FormRequest
             'carrierServiceId' => ['nullable', 'integer'], // Related to CarrierService
             
             // IF IT HAS ADDRESS
-            'name' => ['required', 'string', 'max:41'], // The name of the customer or address
+            'name' => ['nullable', 'string', 'max:41'], // The name of the customer or address
             'city' => ['nullable', 'string', 'max:30'], // The city of the address
             'countryId' => ['nullable', 'integer', 'min:0'], // Related to Country
             'locationGroupId' => ['nullable', 'integer', 'min:0'],
             'addressName' => ['nullable', 'string', 'max:90'], // The name of the address
             'stateId' => ['nullable', 'integer', 'min:0'], // Related to State
-            'address' => ['required', 'string', 'max:90'], // The address
+            'address' => ['nullable', 'string', 'max:90'], // The address
             'typeID' => ['nullable', 'integer', 'min:0'], // Likely related to AddressType
             'zip' => ['nullable', 'string', 'max:10'], // The zip code 
         ];

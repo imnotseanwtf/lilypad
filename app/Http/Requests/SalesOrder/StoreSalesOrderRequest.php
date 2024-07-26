@@ -26,7 +26,6 @@ class StoreSalesOrderRequest extends FormRequest
     {
         return [
             // General Information
-            'flag' => ['required', 'boolean'], // Flag
             'soNum' => ['required', 'integer'],
             'status' => ['required', 'integer'], // Status
             'customerName' => ['required', 'string', 'max:100'], // CustomerName
