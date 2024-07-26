@@ -27,22 +27,22 @@ class UpdateSalesOrderItemRequest extends FormRequest
         return [
             'items' => ['required', 'array'],
             'items.*.flag' => ['required', 'boolean'],
-            'items.*.soItemtypeId' => ['required', 'integer', 'exist:soitemtype,id'], // typeId
+            'items.*.soItemTypeId' => ['required', 'integer', 'exist:soitemtype,id'], // typeId
             'items.*.soId' => ['required', 'integer', 'exists:so,id'],
             'items.*.statusId' => ['required' , 'integer'],
-            'items.*.productNum' => ['nullable', 'string', 'max:70'], 
+            'items.*.productNumber' => ['nullable', 'string', 'max:70'], // productNum
             'items.*.productDescription' => ['nullable', 'string', 'max:256'], // description
             'items.*.productQuantity' => ['required', 'integer'], // qtyOrdered
-            'items.*.uomId' => ['nullable', 'integer'],
+            'items.*.uom' => ['nullable', 'integer'],
             'items.*.productPrice' => ['nullable', 'numeric'], // unitPrice
-            'items.*.taxableFlag' => ['required', 'boolean'],
-            'items.*.taxRateCode' => ['required', 'integer'],
+            'items.*.taxable' => ['required', 'boolean'],
+            'items.*.taxCode' => ['required', 'integer'],
             'items.*.note' => ['required', 'string'],
             'items.*.itemQuickBooksClassName' => ['nullable', 'integer'],  //qbClassId
             'items.*.itemScheduledFulfillment' => ['required', 'date'], //dateScheduledFulfillment
-            'items.*.showItemFlag' => ['required', 'boolean'],
+            'items.*.showItem' => ['required', 'boolean'],
             'items.*.revisionLevel' => ['required', 'string'], // revLevel
-            'items.*.customerPartNum' => ['nullable', 'string', 'max:70'],
+            'items.*.customerPartNumber' => ['nullable', 'string', 'max:70'],
         ];
     }
 

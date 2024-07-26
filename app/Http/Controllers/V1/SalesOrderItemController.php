@@ -76,7 +76,13 @@ class SalesOrderItemController extends Controller
         $salesOrderItems->update(
             $updateSalesOrderItemRequest->validated() +
                 [
-                    'typeId' => $updateSalesOrderItemRequest->soItemtypeId,
+                    'typeId' => $updateSalesOrderItemRequest->soItemTypeId,
+                    'oumId' => $updateSalesOrderItemRequest->uom,
+                    'productNum' => $updateSalesOrderItemRequest->productNumber,
+                    'showItemFlag' => $updateSalesOrderItemRequest->showItem,
+                    'taxRateCode' => $updateSalesOrderItemRequest->taxCode,
+                    'taxableFlag' => $updateSalesOrderItemRequest->taxable,
+                    'customerPartNum' => $updateSalesOrderItemRequest->customerPartNumber,
                     'description' => $updateSalesOrderItemRequest->productDescription,
                     'qtyOrdered' => $updateSalesOrderItemRequest->productQuantity,
                     'unitPrice' => $updateSalesOrderItemRequest->productPrice,
@@ -84,7 +90,6 @@ class SalesOrderItemController extends Controller
                     'revLevel' => $updateSalesOrderItemRequest->revisionLevel,
                 ]
         );
-
 
         return response()->json(
             [
