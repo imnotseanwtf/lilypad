@@ -33,7 +33,7 @@ class StoreSalesOrderItemRequest extends FormRequest
             'items.*.description' => ['nullable', 'string', 'max:256'],
             'items.*.qtyOrdered' => ['required', 'integer'],
             'items.*.uomId' => ['nullable', 'integer'],
-            'items.*.unitPrice' => ['nullable', 'numeric', 'digits_between:1,28'],
+            'items.*.unitPrice' => ['nullable', 'numeric'],
             'items.*.taxableFlag' => ['required', 'boolean'],
             'items.*.taxRateCode' => ['required', 'integer'],
             'items.*.note' => ['required', 'string'],
