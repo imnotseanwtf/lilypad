@@ -150,7 +150,6 @@ class SalesOrderController extends Controller
             [
                 'salesOrder' => $salesOrder,
                 'customer' => $customer,
-                'address' => $address,
                 'message' => 'Sales Order Created Successfully!',
             ],
             Response::HTTP_CREATED
