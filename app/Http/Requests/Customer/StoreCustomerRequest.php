@@ -48,7 +48,7 @@ class StoreCustomerRequest extends FormRequest
             'url' => ['nullable', 'url', 'max:30'], // The URL for this customer
             'issuableStatusId' => ['nullable', 'integer'], // Related to IssuableStatus
             'carrierServiceId' => ['nullable', 'integer'], // Related to CarrierService
-
+            
             // IF IT HAS ADDRESS
             'name' => ['required', 'string', 'max:41'], // The name of the customer or address
             'city' => ['nullable', 'string', 'max:30'], // The city of the address

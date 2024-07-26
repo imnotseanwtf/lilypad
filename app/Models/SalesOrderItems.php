@@ -47,4 +47,10 @@ class SalesOrderItems extends Model
     ];
 
     public $timestamps = false;
+
+    public function scopeForSalesOrderExcluding($query, $soId, array $excludeIds = [])
+    {
+        return $query->where('soId', $soId)
+                     ->whereNotIn('id', $excludeIds);
+    }
 }

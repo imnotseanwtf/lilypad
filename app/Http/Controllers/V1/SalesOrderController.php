@@ -53,7 +53,7 @@ class SalesOrderController extends Controller
         $status = SalesOrderStatus::firstOrCreate(['name' => $storeSalesOrderRequest->status]);
 
         // Carrier
-        // $carrier = Carrier::where('name', $storeSalesOrderRequest->carrierName)->first();
+        $carrier = Carrier::where('name', $storeSalesOrderRequest->carrierName)->first();
         // $carrierService = CarrierService::where('name', $storeSalesOrderRequest->carrierService)->first();
 
         // Tax Rate
@@ -101,7 +101,6 @@ class SalesOrderController extends Controller
 
         // SoNum
         $lastNum = optional(SalesOrder::orderBy('id', 'desc')->first())->num;
-        $newNum = $lastNum ? (string)((int)$lastNum + 1) : '10001';
 
         $salesOrder = SalesOrder::create(
             $storeSalesOrderRequest->except('items') +
@@ -119,21 +118,20 @@ class SalesOrderController extends Controller
 
                     'customerId' => $customer->id,
 
-                    // 'carrierId' => $carrier->id,
+                    'carrierId' => $carrier->id,
                     // 'carrierServiceId' => $carrierService->id,
 
                     'residentialFlag' => $storeSalesOrderRequest->shipToResidential,
                     'qbClassId' => $qbclass->id,
-                    'num' => $newNum,
+
+                    'num' =>  $storeSalesOrderRequest->soNum ?? (string)((int)$lastNum + 1),
                 ]
         );
 
         $salesOrderItems = [];
 
-        foreach ($storeSalesOrderItemRequest->validated()['items'] as $item) {
-            $item['soId'] = $salesOrder->id;
-            $item['statusId'] = $status->id;
-            $item['taxableFlag'] = $storeSalesOrderItemRequest->Flas;
+        foreach ($storeSalesOrderItemRequest->except('soId')['items'] as $item) {
+            $item['taxableFlag'] = $storeSalesOrderItemRequest->Flag;
             $salesOrderItems[] = SalesOrderItems::create($item);
         }
 
@@ -221,11 +219,10 @@ class SalesOrderController extends Controller
             }
         }
 
-        // Delete items that are not in the update request
         $existingItemIds = array_column($updateSalesOrderItemRequest->validated()['items'], 'id');
-        SalesOrderItems::where('soId', $salesOrder->id)
-            ->whereNotIn('id', $existingItemIds)
-            ->delete();
+
+        // Delete items that are not in the update request
+        SalesOrderItems::forSalesOrderExcluding($salesOrder->id, $existingItemIds)->delete();
 
         return response()->json(
             [
