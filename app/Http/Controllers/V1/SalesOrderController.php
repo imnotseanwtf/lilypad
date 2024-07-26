@@ -90,12 +90,7 @@ class SalesOrderController extends Controller
                     'accountId' => $account->id,
                 ]);
                 $customer->save();
-            }
 
-            $customerId = $customer->id;
-
-            // Create or update an address only if the customer is newly created
-            if ($customer->wasRecentlyCreated) {
                 $address = Address::create(
                     $storeCustomerRequest->only([
                         'name',
@@ -111,9 +106,8 @@ class SalesOrderController extends Controller
                         'accountId' => $account->id,
                     ]
                 );
-
-                $address->save();
             }
+            $customerId = $customer->id;
         }
 
         // SoNum
@@ -150,6 +144,7 @@ class SalesOrderController extends Controller
             [
                 'salesOrder' => $salesOrder,
                 'customer' => $customer,
+                'address' => $address,
                 'message' => 'Sales Order Created Successfully!',
             ],
             Response::HTTP_CREATED
