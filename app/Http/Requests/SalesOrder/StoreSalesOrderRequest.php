@@ -28,7 +28,7 @@ class StoreSalesOrderRequest extends FormRequest
             // General Information
             'soNum' => ['required', 'integer'],
             'status' => ['required', 'integer'], // Status
-            'customerName' => ['required', 'string', 'max:100'], // CustomerName
+            'customerName' => ['nullable', 'string', 'max:100'], // CustomerName
             'customerContact' => ['required', 'string', 'max:30'], // CustomerContact
 
             // Billing Information

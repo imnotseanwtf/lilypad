@@ -27,7 +27,7 @@ class StoreSalesOrderItemRequest extends FormRequest
         return [
             'items' => ['required', 'array'],
             'items.*.Flag' => ['required', 'boolean'],
-            'items.*.soId'=> ['required','integer'],
+            'items.*.soId' => ['required', 'integer', 'exists:so,id'],
             'items.*.statusId' => ['required' , 'integer'],
             'items.*.productNum' => ['nullable', 'string', 'max:70'],
             'items.*.description' => ['nullable', 'string', 'max:256'],

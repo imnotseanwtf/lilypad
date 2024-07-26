@@ -26,47 +26,39 @@ class UpdateCustomerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'accountTypeId' => ['nullable', 'integer'],
-            'activeFlag' => ['nullable', 'boolean'],
-            'creditLimit' => ['nullable', 'numeric'],
-            'currencyId' => ['nullable', 'integer'],
-            'currencyRate' => ['nullable', 'numeric'],
-            'dateCreated' => ['nullable', 'date'],
-            'dateLastModified' => ['nullable', 'date'],
-            'defaultCarrierId' => ['nullable', 'integer'],
-            'defaultPaymentTermsId' => ['nullable', 'integer'],
-            'defaultSalesmanId' => ['nullable', 'integer'],
-            'defaultShipTermsId' => ['nullable', 'integer'],
-            'jobDepth' => ['nullable', 'integer'],
-            'lastChangedUser' => ['nullable', 'string', 'max:15'],
-            'customerName' => ['nullable', 'string', 'max:41'],
-            'note' => ['nullable', 'string', 'max:90'],
-            'number' => ['nullable', 'string', 'max:30'],
-            'parentId' => ['nullable', 'integer'],
-            'pipelineAccountNum' => ['nullable', 'integer'],
-            'qbClassId' => ['nullable', 'integer'],
-            'statusId' => ['nullable', 'integer'],
-            'sysUserId' => ['nullable', 'integer'],
-            'taxExempt' => ['nullable', 'boolean'],
-            'taxExemptNumber' => ['nullable', 'string', 'max:30'],
-            'taxRateId' => ['nullable', 'integer'],
-            'toBeEmailed' => ['nullable', 'boolean'],
-            'toBePrinted' => ['nullable', 'boolean'],
-            'url' => ['nullable', 'url', 'max:30'],
-            'issuableStatusId' => ['nullable', 'integer'],
-            'carrierServiceId' => ['nullable', 'integer'],
-
+            'accountTypeId' => ['nullable', 'integer'], // Corresponds to customer group
+            'activeFlag' => ['nullable', 'boolean'], // Specifies if the customer is active
+            'creditLimit' => ['nullable', 'numeric'], // The customer's credit limit
+            'currencyId' => ['nullable', 'integer'], // Related to CurrencyName
+            'currencyRate' => ['nullable', 'numeric'], // The currency rate of the customer
+            'defaultCarrierId' => ['nullable', 'integer'], // Related to CarrierName
+            'defaultPaymentTermsId' => ['nullable', 'integer'], // Related to PaymentTerms
+            'defaultSalesmanId' => ['nullable', 'integer'], // Related to Salesman
+            'defaultShipTermsId' => ['nullable', 'integer'], // Related to ShippingTerms
+            'customerName' => ['nullable', 'string', 'max:41'], // The name of the customer
+            'note' => ['nullable', 'string', 'max:90'], // Likely corresponds to AlertNotes
+            'number' => ['nullable', 'string', 'max:30'], // The account number associated with the customer
+            'qbClassId' => ['nullable', 'integer'], // Related to QuickBooksClassName
+            'statusId' => ['nullable', 'integer'], // The status of the customer (Normal, Preferred, Hold Sales, etc.)
+            'taxExempt' => ['nullable', 'boolean'], // Specifies if this customer is tax exempt
+            'taxExemptNumber' => ['nullable', 'string', 'max:30'], // The tax exempt number for the customer
+            'taxRateId' => ['nullable', 'integer'], // Related to TaxRate
+            'toBeEmailed' => ['nullable', 'boolean'], // Flags orders for this customer as To Be Emailed
+            'toBePrinted' => ['nullable', 'boolean'], // Flags orders for this customer as To Be Printed
+            'url' => ['nullable', 'url', 'max:30'], // The URL for this customer
+            'issuableStatusId' => ['nullable', 'integer'], // Related to IssuableStatus
+            'carrierServiceId' => ['nullable', 'integer'], // Related to CarrierService
+            
             // IF IT HAS ADDRESS
-            'name' => ['required', 'string', 'max:41'],
-            'city' => ['nullable', 'string', 'max:30'],
-            'countryId' => ['nullable', 'integer', 'min:0'],
+            'name' => ['nullable', 'string', 'max:41'], // The name of the customer or address
+            'city' => ['nullable', 'string', 'max:30'], // The city of the address
+            'countryId' => ['nullable', 'integer', 'min:0'], // Related to Country
             'locationGroupId' => ['nullable', 'integer', 'min:0'],
-            'addressName' => ['nullable', 'string', 'max:90'],
-            'pipelineContactNum' => ['nullable', 'integer'],
-            'stateId' => ['nullable', 'integer', 'min:0'],
-            'address' => ['required', 'string', 'max:90'],
-            'typeID' => ['nullable', 'integer', 'min:0'],
-            'zip' => ['nullable', 'string', 'max:10'],
+            'addressName' => ['nullable', 'string', 'max:90'], // The name of the address
+            'stateId' => ['nullable', 'integer', 'min:0'], // Related to State
+            'address' => ['nullable', 'string', 'max:90'], // The address
+            'typeID' => ['nullable', 'integer', 'min:0'], // Likely related to AddressType
+            'zip' => ['nullable', 'string', 'max:10'], // The zip code 
         ];
     }
 
