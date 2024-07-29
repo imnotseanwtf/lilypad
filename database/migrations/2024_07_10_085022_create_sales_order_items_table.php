@@ -45,12 +45,13 @@ return new class extends Migration
             $table->integer('typeId')->notnull();
             $table->decimal('unitPrice', 28, 9)->nullable();
             $table->integer('uomId')->nullable();
-            $table->timestamps();
+            $table->string('customFieldItem')->nullable();
         });
     }
 
     /**
      * Reverse the migrations.
+     * 
      */
     public function down(): void
     {

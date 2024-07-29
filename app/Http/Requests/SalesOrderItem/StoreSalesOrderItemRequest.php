@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Requests\SalesOrderItem;
+use Illuminate\Foundation\Http\FormRequest;
 
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,10 +39,11 @@ class StoreSalesOrderItemRequest extends FormRequest
             'items.*.taxCode' => ['required', 'integer'],
             'items.*.note' => ['required', 'string'],
             'items.*.itemQuickBooksClassName' => ['nullable', 'integer'],  //qbClassId
-            'items.*.itemScheduledFulfillment' => ['required', 'date'], //dateScheduledFulfillment
+            'items.*.itemDateScheduled' => ['required', 'date'], //dateScheduledFulfillment
             'items.*.showItem' => ['required', 'boolean'],
             'items.*.revisionLevel' => ['required', 'string'], // revLevel
             'items.*.customerPartNumber' => ['nullable', 'string', 'max:70'],
+            'items.*.kitItem' => ['required', 'boolean'],
         ];
     }
 

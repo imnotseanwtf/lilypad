@@ -18,14 +18,9 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(CustomerDataTable $customerDataTable): JsonResponse | View
+    public function index()
     {
-        return $customerDataTable->render('customer.index');
-    }
-
-    public function create(): View
-    {
-        return view('customer.create');
+        // 
     }
 
     /**

@@ -26,35 +26,35 @@ class StoreSalesOrderRequest extends FormRequest
     {
         return [
             // General Information
-            'soNum' => ['nullable', 'integer'],
-            'status' => ['required', 'integer'], // Status
-            'customerName' => ['nullable', 'string', 'max:100'], // CustomerName
+            'soNum' => ['required', 'integer'],
+            'status' => ['required', 'string'], // Status
+            'customerName' => ['required', 'string', 'max:100'], // CustomerName
             'customerContact' => ['required', 'string', 'max:30'], // CustomerContact
 
             // Billing Information
             'billToName' => ['required', 'string', 'max:41'], // BillToName
             'billToAddress' => ['required', 'string', 'max:90'], // BillToAddress
             'billToCity' => ['required', 'string', 'max:30'], // BillToCity
-            'billToState' => ['required', 'string'], // BillToState
+            'billToState' => ['required', 'string', 'exists:state,name'], // BillToState
             'billToZip' => ['required', 'string', 'max:10'], // BillToZip
-            'billToCountry' => ['required', 'string'], // BillToCountry
+            'billToCountry' => ['required', 'string', 'exists:country,name'], // BillToCountry
 
             // Shipping Information
             'shipToName' => ['required', 'string', 'max:41'], // ShipToName
             'shipToAddress' => ['required', 'string', 'max:90'], // ShipToAddress
             'shipToCity' => ['required', 'string', 'max:30'], // ShipToCity
-            'shipToState' => ['required', 'string'], // ShipToState
+            'shipToState' => ['required', 'string', 'exists:state,name'], // ShipToState
             'shipToZip' => ['required', 'string', 'max:10'], // ShipToZip
-            'shipToCountry' => ['required', 'string'], // ShipToCountry
+            'shipToCountry' => ['required', 'string', 'exists:country,name'], // ShipToCountry
             'shipToResidential' => ['required', 'boolean'], // ShipToResidential
 
             // Carrier Information
-            'carrierName' => ['required', 'string', 'max:100'], // CarrierName
-            'carrierService' => ['required', 'string', 'max:100'], // CarrierService
+            'carrierName' => ['required', 'string', 'max:100', 'exists:carrier,name'], // CarrierName
+            'carrierService' => ['required', 'string', 'max:100', 'exists:carrierservice,name'], // CarrierService
 
             // Tax and Priority Information
-            'taxRateName' => ['required', 'string', 'max:100'], // TaxRateName
-            'priorityId' => ['required', 'integer', 'min:0'], // PriorityId
+            'taxRateName' => ['required', 'string', 'max:100', 'exists:taxrate,name'], // TaxRateName
+            'priorityId' => ['required', 'integer', 'min:0', 'exists:priority,id'], // PriorityId
 
             // Order Information
             'poNum' => ['required', 'string', 'max:50'], // PONum
@@ -71,7 +71,7 @@ class StoreSalesOrderRequest extends FormRequest
             'note' => ['required', 'string', 'max:500'], // Note
 
             // QuickBooks and Location Information
-            'quickBooksClassName' => ['required', 'integer', 'min:0'], // QuickBooksClassName
+            'quickBookClassName' => ['required', 'string', 'exists:qbclass,name'], // QuickBooksClassName
             'locationGroupName' => ['required', 'string', 'max:100'], // LocationGroupName
 
             // Contact Information
@@ -86,6 +86,31 @@ class StoreSalesOrderRequest extends FormRequest
 
             // Custom Field
             'customField' => ['required', 'string', 'max:255'], // CF-Custom
+
+            'currencyName' => ['required', 'string', 'max:255', 'exists:currency,name'],
+            'currencyRate' => ['required', 'numeric'],
+            'priceIsHomeCurrency' => ['required', 'numeric'],
+
+
+            // SO ITEM
+            'items' => ['required', 'array'],
+            'items.*.flag' => ['required', 'boolean'],
+            'items.*.soItemTypeId' => ['required', 'integer', 'exists:soitemtype,id'], // typeId
+            'items.*.productNumber' => ['required', 'string', 'max:70', 'exists:product,num'], // productNum
+            'items.*.productDescription' => ['required', 'string', 'max:256'], // description
+            'items.*.productQuantity' => ['required', 'integer'], // qtyOrdered
+            'items.*.uom' => ['required', 'integer'],
+            'items.*.productPrice' => ['required', 'numeric'], // unitPrice
+            'items.*.taxable' => ['required', 'boolean'],
+            'items.*.taxCode' => ['required', 'integer'],
+            'items.*.note' => ['required', 'string'],
+            'items.*.itemQuickBooksClassName' => ['required', 'integer'],  //qbClassId
+            'items.*.itemDateScheduled' => ['required', 'date'], //dateScheduledFulfillment
+            'items.*.showItem' => ['required', 'boolean'],
+            'items.*.revisionLevel' => ['required', 'string'], // revLevel
+            'items.*.customerPartNumber' => ['required', 'string', 'max:70'],
+            'items.*.kitItem' => ['required', 'boolean'],
+            'items.*.cfi' => ['required', 'string'],
         ];
     }
 

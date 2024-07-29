@@ -14,13 +14,17 @@ use App\Models\Address;
 use App\Models\Carrier;
 use App\Models\CarrierService;
 use App\Models\Country;
+use App\Models\Currency;
 use App\Models\Customer;
+use App\Models\Product;
 use App\Models\qbClass;
 use App\Models\SalesOrder;
 use App\Models\SalesOrderItems;
 use App\Models\SalesOrderStatus;
 use App\Models\State;
 use App\Models\TaxRate;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,78 +41,33 @@ class SalesOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSalesOrderRequest $storeSalesOrderRequest, StoreCustomerRequest $storeCustomerRequest): JsonResponse
+    public function store(StoreSalesOrderRequest $storeSalesOrderRequest): JsonResponse
     {
-        // BILL TO
-        $billToCountry = Country::firstOrCreate(['name' => $storeSalesOrderRequest->billToCountry]);
-        $billToState = State::firstOrCreate(['name' => $storeSalesOrderRequest->billToState]);
+        try {
+            $data = [
+                'billToCountry' => Country::where('name', $storeSalesOrderRequest->billToCountry)->firstOrFail(),
+                'billToState' => State::where('name', $storeSalesOrderRequest->billToState)->firstOrFail(),
+                'shipToCountry' => Country::where('name', $storeSalesOrderRequest->shipToCountry)->firstOrFail(),
+                'shipToState' => State::where('name', $storeSalesOrderRequest->shipToState)->firstOrFail(),
 
-        // SHIP TO
-        $shipToCountry = Country::firstOrCreate(['name' => $storeSalesOrderRequest->shipToCountry]);
-        $shipToState = State::firstOrCreate(['name' => $storeSalesOrderRequest->shipToState]);
-
-        // qbclass
-        $qbclass = qbClass::firstOrCreate(['name' => $storeSalesOrderRequest->quickBookClassName]);
-
-        // Status
-        $status = SalesOrderStatus::firstOrCreate(['name' => $storeSalesOrderRequest->status]);
-
-        // Carrier`
-        $carrier = Carrier::where('name', $storeSalesOrderRequest->carrierName)->first();
-        // $carrierService = CarrierService::where('name', $storeSalesOrderRequest->carrierService)->first();
-
-        // Tax Rate
-        $taxRate = TaxRate::firstOrCreate(['name' => $storeSalesOrderRequest->taxRateName]);
-
-        $customerId = null;
+                'qbclass' => qbClass::where('name', $storeSalesOrderRequest->quickBookClassName)->firstOrFail(),
+                'status' => SalesOrderStatus::where('name', $storeSalesOrderRequest->status)->firstOrFail(), // Have Data
+                'currency' => Currency::where('name', $storeSalesOrderRequest->currencyName)->firstOrFail(),
+                'carrier' => Carrier::where('name', $storeSalesOrderRequest->carrierName)->firstOrFail(), // Have Data
+                'carrierService' => CarrierService::where('name', $storeSalesOrderRequest->carrierService)->firstOrFail(), // Have Data
+                'taxRate' => TaxRate::where('name', $storeSalesOrderRequest->taxRateName)->firstOrFail(),
+            ];
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
 
         // CUSTOMER
-        if ($storeCustomerRequest->customerName !== null) {
-            // Create an account
-            $account = Account::create(['typeId' => $storeCustomerRequest->accountTypeId]);
-
-            // Find or instantiate a customer
-            $customer = Customer::firstOrNew(
-                ['name' => $storeCustomerRequest->customerName]
-            );
-
-            // Check if the customer is newly created
-            if (!$customer->exists) {
-                $customer->fill($storeCustomerRequest->except([
-                    'accountTypeId',
-                    'city',
-                    'countryId',
-                    'locationGroupId',
-                    'addressName',
-                    'pipelineContactNum',
-                    'stateId',
-                    'address',
-                    'typeId',
-                    'zip'
-                ]) + [
-                    'statusId' => $storeSalesOrderRequest->status,
-                    'accountId' => $account->id,
-                ]);
-                $customer->save();
-
-                $address = Address::create(
-                    $storeCustomerRequest->only([
-                        'name',
-                        'countryId',
-                        'locationGroupId',
-                        'addressName',
-                        'pipelineContactNum',
-                        'stateId',
-                        'address',
-                        'typeId',
-                        'zip'
-                    ]) + [
-                        'accountId' => $account->id,
-                    ]
-                );
-            }
-            $customerId = $customer->id;
-        }
+        $customer = Customer::firstOrCreate(
+            ['name' => $storeSalesOrderRequest->customerName],
+            [
+                'statusId' => $data['status']->id,
+            ]
+        );
 
         // SoNum
         $lastNum = optional(SalesOrder::orderBy('id', 'desc')->first())->num;
@@ -117,39 +76,74 @@ class SalesOrderController extends Controller
         $salesOrder = SalesOrder::create(
             $storeSalesOrderRequest->except('items') +
                 [
-                    'billToCountryId' => $billToCountry->id,
-                    'billToStateId' => $billToState->id,
-
-                    'shipToCountryId' => $shipToCountry->id,
-                    'shipToStateId' => $shipToState->id,
-
-                    'taxRateId' => $taxRate->id,
-                    // 'taxRate' => $taxRate->rate,
-
-                    'statusId' => $storeSalesOrderRequest->status,
-
-                    'customerId' => $customerId,
-
-                    'carrierId' => $carrier->id,
-                    // 'carrierServiceId' => $carrierService->id,
-
+                    'billToCountryId' => $data['billToCountry']->id,
+                    'billToStateId' => $data['billToState']->id,
+                    'shipToCountryId' => $data['shipToCountry']->id,
+                    'shipToStateId' => $data['shipToState']->id,
+                    'taxRateId' => $data['taxRate']->id,
+                    'statusId' => $data['status']->id,
+                    'currencyId' => $data['currency']->id,
+                    'customerId' => $customer->id,
+                    'carrierId' => $data['carrier']->id,
+                    'carrierServiceId' => $data['carrierService']->id,
                     'residentialFlag' => $storeSalesOrderRequest->shipToResidential,
-                    'qbClassId' => $qbclass->id,
-
+                    'qbClassId' => $data['qbclass']->id,
                     'num' =>  $storeSalesOrderRequest->soNum ?? $newNum,
                 ]
         );
 
+        $salesOrderItems = [];
+
+        foreach ($storeSalesOrderRequest->validated()['items'] as $item) {
+            // Check if the product exists
+            try {
+                $product = Product::where('num', $item['productNumber'])->firstOrFail();
+            } catch (ModelNotFoundException $e) {
+                return response()->json([
+                    'error' => 'Product not found',
+                    'message' => "Product with number {$item['productNumber']} does not exist."
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            // Handle QuickBooks class
+            $qbClass = qbClass::firstOrCreate(['name' => $item['itemQuickBooksClassName']]);
+
+            // Map and transform item data
+            $transformedItem = [
+                'note' => $item['note'],
+                'typeId' => $item['soItemTypeId'],
+                'oumId' => $item['uom'],
+                'productId' => $product->id,
+                'productNum' => $item['productNumber'],
+                'showItemFlag' => $item['showItem'],
+                'taxRateCode' => $item['taxCode'],
+                'taxableFlag' => $item['taxable'],
+                'customerPartNum' => $item['customerPartNumber'],
+                'description' => $item['productDescription'],
+                'qtyOrdered' => $item['productQuantity'],
+                'unitPrice' => $item['productPrice'],
+                'dateScheduledFulfillment' => $item['itemDateScheduled'],
+                'revLevel' => $item['revisionLevel'],
+                'customFieldItem' => $item['cfi'],
+                'soId' => $salesOrder->id,
+                'qbClassId' => $qbClass->id,
+                'statusId' => $data['status']->id,
+            ];
+
+            // Create and store the sales order item
+            $salesOrderItems[] = SalesOrderItems::create($transformedItem);
+        }
+
+
         return response()->json(
             [
-                'salesOrder' => $salesOrder,
-                'customer' => $customer ?? null,
-                'message' => 'Sales Order Created Successfully!',
+                'message' => 'Sales Order created successfully',
+                'salesOrderData' => $salesOrder,
+                'salesOrderItemData' => $salesOrderItems,
             ],
             Response::HTTP_CREATED
         );
     }
-
     /**
      * Display the specified resource.
      */
@@ -161,98 +155,101 @@ class SalesOrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSalesOrderRequest $updateSalesOrderRequest, UpdateCustomerRequest $updateCustomerRequest, SalesOrder $salesOrder): JsonResponse
+    public function update(UpdateSalesOrderRequest $request, SalesOrder $salesOrder): JsonResponse
     {
+        try {
+            // Fetch the associated entities based on the request data
+            $data = [
+                'billToCountry' => Country::where('name', $request->billToCountry)->firstOrFail(),
+                'billToState' => State::where('name', $request->billToState)->firstOrFail(),
+                'shipToCountry' => Country::where('name', $request->shipToCountry)->firstOrFail(),
+                'shipToState' => State::where('name', $request->shipToState)->firstOrFail(),
+                'qbclass' => qbClass::where('name', $request->quickBookClassName)->firstOrFail(),
+                'status' => SalesOrderStatus::where('name', $request->status)->firstOrFail(),
+                'currency' => Currency::where('name', $request->currencyName)->firstOrFail(),
+                'carrier' => Carrier::where('name', $request->carrierName)->firstOrFail(),
+                'carrierService' => CarrierService::where('name', $request->carrierService)->firstOrFail(),
+                'taxRate' => TaxRate::where('name', $request->taxRateName)->firstOrFail(),
+            ];
 
-        // BILL TO
-        $billToCountry = Country::firstOrCreate(['name' => $updateSalesOrderRequest->billToCountry]);
-        $billToState = State::firstOrCreate(['name' => $updateSalesOrderRequest->billToState]);
+            // Update Customer information
+            $customer = Customer::updateOrCreate(
+                ['name' => $request->customerName],
+                ['status' => $data['status']->id]
+            );
 
-        // SHIP TO
-        $shipToCountry = Country::firstOrCreate(['name' => $updateSalesOrderRequest->shipToCountry]);
-        $shipToState = State::firstOrCreate(['name' => $updateSalesOrderRequest->shipToState]);
-
-        // qbclass
-        $qbclass = qbClass::firstOrCreate(['name' => $updateSalesOrderRequest->quickBookClassName]);
-
-        // Status
-        $status = SalesOrderStatus::firstOrCreate(['name' => $updateSalesOrderRequest->status]);
-
-        // Carrier
-        $carrier = Carrier::where('name', $updateSalesOrderRequest->carrierName)->first();
-
-        // Tax Rate
-        $taxRate = TaxRate::firstOrCreate(['name' => $updateSalesOrderRequest->taxRateName]);
-
-        // CUSTOMER
-        if ($updateCustomerRequest->customerName !== null) {
-            $customer = Customer::findOrFail($salesOrder->customerId);
-
-            $customer->update($updateCustomerRequest->except([
-                'accountTypeId',
-                'city',
-                'countryId',
-                'locationGroupId',
-                'addressName',
-                'pipelineContactNum',
-                'stateId',
-                'address',
-                'typeId',
-                'zip'
-            ]) + [
-                'statusId' => $updateSalesOrderRequest->status,
+            // Update Sales Order
+            $salesOrder->update($request->except('items') + [
+                'billToCountryId' => $data['billToCountry']->id,
+                'billToStateId' => $data['billToState']->id,
+                'shipToCountryId' => $data['shipToCountry']->id,
+                'shipToStateId' => $data['shipToState']->id,
+                'taxRateId' => $data['taxRate']->id,
+                'statusId' => $data['status']->id,
+                'currencyId' => $data['currency']->id,
+                'customerId' => $customer->id,
+                'carrierId' => $data['carrier']->id,
+                'carrierServiceId' => $data['carrierService']->id,
+                'residentialFlag' => $request->shipToResidential,
+                'qbClassId' => $data['qbclass']->id,
+                'num' => $request->soNum ?? $salesOrder->num,
             ]);
 
-            // Update the associated address
-            $address = Address::where('accountId', $customer->accountId)->first();
-            if ($address) {
-                $address->update(
-                    $updateCustomerRequest->only([
-                        'name',
-                        'countryId',
-                        'locationGroupId',
-                        'addressName',
-                        'pipelineContactNum',
-                        'stateId',
-                        'address',
-                        'typeId',
-                        'zip'
-                    ])
+            // Update Sales Order Items
+            $salesOrderItems = [];
+
+            foreach ($request->validated()['items'] as $item) {
+                try {
+                    $product = Product::where('num', $item['productNumber'])->firstOrFail();
+                } catch (ModelNotFoundException $e) {
+                    return response()->json([
+                        'error' => 'Product not found',
+                        'message' => "Product with number {$item['productNumber']} does not exist."
+                    ], Response::HTTP_NOT_FOUND);
+                }
+
+                $qbClass = qbClass::firstOrCreate(['name' => $item['itemQuickBooksClassName']]);
+
+                $transformedItem = [
+                    'note' => $item['note'],
+                    'typeId' => $item['soItemTypeId'],
+                    'oumId' => $item['uom'],
+                    'productId' => $product->id,
+                    'productNum' => $item['productNumber'],
+                    'showItemFlag' => $item['showItem'],
+                    'taxRateCode' => $item['taxCode'],
+                    'taxableFlag' => $item['taxable'],
+                    'customerPartNum' => $item['customerPartNumber'],
+                    'description' => $item['productDescription'],
+                    'qtyOrdered' => $item['productQuantity'],
+                    'unitPrice' => $item['productPrice'],
+                    'dateScheduledFulfillment' => $item['itemDateScheduled'],
+                    'revLevel' => $item['revisionLevel'],
+                    'customFieldItem' => $item['cfi'],
+                    'soId' => $salesOrder->id,
+                    'qbClassId' => $qbClass->id,
+                ];
+
+                $salesOrderItems[] = SalesOrderItems::updateOrCreate(
+                    ['soId' => $salesOrder->id, 'productId' => $product->id],
+                    $transformedItem
                 );
             }
-        }
 
-        $salesOrder->update(
-            $updateSalesOrderRequest->except('items') +
+            return response()->json(
                 [
-                    'billToCountryId' => $billToCountry->id,
-                    'billToStateId' => $billToState->id,
-
-                    'shipToCountryId' => $shipToCountry->id,
-                    'shipToStateId' => $shipToState->id,
-
-                    'taxRateId' => $taxRate->id,
-
-                    'statusId' => $updateSalesOrderRequest->status,
-
-                    'carrierId' => $carrier->id,
-
-                    'residentialFlag' => $updateSalesOrderRequest->shipToResidential,
-                    'qbClassId' => $qbclass->id,
-                ]
-        );
-
-        return response()->json(
-            [
-                'salesOrder' => $salesOrder,
-                'customer' => $customer ?? null,
-                'address' => $address ?? null,
-                'message' => 'Sales Order Updated Successfully!',
-            ],
-            Response::HTTP_OK
-        );
+                    'message' => 'Sales Order updated successfully',
+                    'salesOrderData' => $salesOrder,
+                    'salesOrderItemData' => $salesOrderItems,
+                ],
+                Response::HTTP_OK
+            );
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
-
 
     /**
      * Remove the specified resource from storage.
