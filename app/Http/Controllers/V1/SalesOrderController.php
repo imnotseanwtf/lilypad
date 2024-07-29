@@ -51,7 +51,7 @@ class SalesOrderController extends Controller
                 'shipToState' => State::where('name', $storeSalesOrderRequest->shipToState)->firstOrFail(),
 
                 'qbclass' => qbClass::where('name', $storeSalesOrderRequest->quickBookClassName)->firstOrFail(),
-                'status' => SalesOrderStatus::where('name', $storeSalesOrderRequest->status)->firstOrFail(), // Have Data
+                'status' => SalesOrderStatus::where('id', $storeSalesOrderRequest->status)->firstOrFail(), // Have Data
                 'currency' => Currency::where('name', $storeSalesOrderRequest->currencyName)->firstOrFail(),
                 'carrier' => Carrier::where('name', $storeSalesOrderRequest->carrierName)->firstOrFail(), // Have Data
                 'carrierService' => CarrierService::where('name', $storeSalesOrderRequest->carrierService)->firstOrFail(), // Have Data
