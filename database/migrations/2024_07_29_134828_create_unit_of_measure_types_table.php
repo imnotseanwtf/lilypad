@@ -12,18 +12,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customerstatus', function (Blueprint $table) {
+        Schema::create('uomtype', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name', 15)->unique();
         });
 
-        DB::table('customerstatus')->insert(
+        DB::table('uomtype')->insert(
             [
-                ['id' => 50,'name' => 'Hold All'],
-                ['id' => 30,'name' => 'Hold Sales'],
-                ['id' => 40,'name' => 'Hold Shipment'],
-                ['id' => 10,'name' => 'Normal'],
-                ['id' => 20,'name' => 'Preferred'],
+                ['name' => 'Count'],
+                ['name' => 'Weight'],
+                ['name' => 'Lenght'],
+                ['name' => 'Area'],
+                ['name' => 'Volume'],
+                ['name' => 'Time'],
             ]
         );
     }
@@ -33,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customer_statuses');
+        Schema::dropIfExists('unit_of_measure_types');
     }
 };

@@ -25,64 +25,29 @@ class StorePartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'abcCode' => ['nullable', 'string', 'max:1'],
-            'accountingHash' => ['nullable', 'string', 'max:30'],
-            'accountingId' => ['nullable', 'string', 'max:36'],
-            'activeFlag' => ['required', 'boolean'],
-            'alertNote' => ['nullable', 'string', 'max:256'],
-            'alwaysManufacture' => ['required', 'boolean'],
-            'configurable' => ['required', 'boolean'],
-            'consumptionRate' => ['required', 'numeric'],
-            'controlledFlag' => ['required', 'boolean'],
-            'cycleCountTol' => ['nullable', 'numeric'],
-            'dateCreated' => ['nullable', 'date'],
-            'dateLastModified' => ['nullable', 'date'],
-            'defaultBomId' => ['nullable', 'integer'],
-            'defaultOutsourcedReturnItemId' => ['nullable', 'integer'],
-            'defaultPoItemTypeId' => ['nullable', 'integer'],
-            'defaultProductId' => ['nullable', 'integer'],
-            'description' => ['nullable', 'string', 'max:252'],
-            'details' => ['nullable', 'string'],
-            'height' => ['nullable', 'numeric'],
-            'inventoryAccountId' => ['nullable', 'integer'],
-            'lastChangedUser' => ['nullable', 'string', 'max:100'],
-            'leadTime' => ['nullable', 'integer'],
-            'len' => ['nullable', 'numeric'],
-            'num' => ['required', 'string', 'max:70', 'unique:part,num'],
-            'partClassId' => ['nullable', 'integer'],
-            'pickInUomOfPart' => ['required', 'boolean'],
-            'receivingTol' => ['nullable', 'numeric'],
-            'revision' => ['nullable', 'string', 'max:15'],
-            'scrapAccountId' => ['nullable', 'integer'],
-            'serializedFlag' => ['required', 'boolean'],
-            'sizeUomId' => ['nullable', 'integer'],
-            'stdCost' => ['nullable', 'numeric'],
-            'taxId' => ['nullable', 'integer'],
-            'trackingFlag' => ['required', 'boolean'],
-            'typeId' => ['required', 'integer'],
-            'uomId' => ['required', 'integer'],
+            'partNumber' => ['required', 'string', 'max:70', 'exists:part,num'], // num
+            'partDescription' => ['nullable', 'string', 'max:252'], // description
+            'partDetails' => ['nullable', 'string'],
+            'uom' => ['required', 'string', 'exists:oum,name'], // uomId
             'upc' => ['nullable', 'string', 'max:31'],
-            'url' => ['nullable', 'string', 'max:256', 'url'],
-            'varianceAccountId' => ['nullable', 'integer'],
+            'partType' => ['required', 'string', 'exists:parttype,name'], // typeId
+            'active' => ['required', 'boolean'], // active Flag
+            'abcCode' => ['nullable', 'string', 'max:1'],
             'weight' => ['nullable', 'numeric'],
-            'weightUomId' => ['nullable', 'integer'],
+            'weightUom' => ['nullable', 'integer'], // weightuomId
             'width' => ['nullable', 'numeric'],
-            'customFields' => ['nullable'],
-
-            // PRODUCT 
-            'defaultSoItemType' => ['required', 'integer'],
-            'displayTypeId' => ['required', 'integer'],
-            'heigh' => ['nullable', 'numeric'],
-            'incomeAccountId' => ['required', 'integer'],
-            'kitFlag' => ['boolean'],
-            'kitGroupedFlag' => ['boolean'],
-            'price' => ['nullable', 'numeric'],
-            'qbClassId' => ['nullable', 'integer'],
-            'sellableInOtherUoms' => ['boolean'],
-            'showSoComboFlag' => ['boolean'],
-            'sku' => ['nullable', 'string', 'max:41'],
-            'taxableFlag' => ['boolean'],
-            'usePriceFlag' => ['boolean'],
+            'lenght' => ['nullable', 'numeric'], // lenght
+            'sizeUom' => ['nullable', 'integer'], // size Uom Id
+            'consumptionRate' => ['required', 'numeric'],
+            'alertNote' => ['nullable', 'string', 'max:256'],
+            'pictureUrl' => ['nullable', 'string', 'max:256', 'url'], // url
+            'revision' => ['nullable', 'string', 'max:15'],
+            'poItemType' => ['nullable', 'integer', 'exists:poitemtype,name'], // defualtPoItemTypeId
+            'defaultOutsourcedReturnItem' => ['nullable', 'integer'], // defaultOutsourcedReturnItemId
+            'primaryTracking' => ['required', 'string'],
+            'tracks' => ['required', 'string'],
+            'nextValue' => ['required', 'string'],
+            'cf' => ['nullable', 'string'], // customFields
         ];
     }
 

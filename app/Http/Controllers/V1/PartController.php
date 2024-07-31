@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Part\StorePartRequest;
 use App\Http\Requests\Part\UpdatePartRequest;
 use App\Models\Part;
+use App\Models\PartType;
 use App\Models\Product;
+use App\Models\PurchaseOrderItemType;
+use App\Models\UnitOfMeasure;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -25,14 +29,42 @@ class PartController extends Controller
      */
     public function store(StorePartRequest $storePartRequest): JsonResponse
     {
-        $part = Part::create($storePartRequest->validated());
+        try {
+            $uom = UnitOfMeasure::where('name', $storePartRequest->uom)->firstOrFail();
+            $partType = PartType::where('name', $storePartRequest->partType)->firstOrFail();
+            $poItemType = PurchaseOrderItemType::where('name', $storePartRequest->partType)->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        };
 
-        $product = Product::create($storePartRequest->validated() + ['partId' => $part->id]);
+        $part = Part::create(
+            $storePartRequest->only(
+                [
+                    'partDetails',
+                    'upc',
+                    'weight',
+                    'width',
+                    'consumptionRate',
+                    'revision',
+                ]
+            ) +
+                [
+                    'num' => $storePartRequest->partNumber,
+                    'description' => $storePartRequest->partDescription,
+                    'uomId' => $uom->id,
+                    'typeId' => $partType->id,
+                    'activeFlag' => $storePartRequest->active,
+                    'weightUomId' => $storePartRequest->weightUom,
+                    'len' => $storePartRequest->lenght,
+                    'sizeUomId' => $storePartRequest->sizeUom,
+                    'url' => $storePartRequest->pictureUrl,
+                    'defaultPoItemTypeId' => $poItemType->id,
+                ]
+        );
 
         return response()->json(
             [
                 'partData' => $part,
-                'productData' => $product,
                 'message' => 'Product Created Successfully!',
             ],
             Response::HTTP_CREATED
@@ -55,7 +87,7 @@ class PartController extends Controller
         $part->update($updatePartRequest->validated());
 
         $product = Product::where('partId', $part->id)->firstOrFail();
-        $product->update($updatePartRequest->validated() + ['partId'=> $part->id]);
+        $product->update($updatePartRequest->validated() + ['partId' => $part->id]);
 
         return response()->json(
             [
