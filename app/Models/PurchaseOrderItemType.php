@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class PurchaseOrderItemType extends Model
 {
     use HasFactory;
+
+    protected $table = 'poitemtype';
 }

@@ -25,29 +25,29 @@ class StorePartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'partNumber' => ['required', 'string', 'max:70', 'exists:part,num'], // num
-            'partDescription' => ['nullable', 'string', 'max:252'], // description
-            'partDetails' => ['nullable', 'string'],
-            'uom' => ['required', 'string', 'exists:oum,name'], // uomId
-            'upc' => ['nullable', 'string', 'max:31'],
+            'partNumber' => ['required', 'string', 'max:70', 'unique:part,num'], // num
+            'partDescription' => ['required', 'string', 'max:252'], // description
+            'partDetails' => ['required', 'string'],
+            'uom' => ['required', 'string', 'exists:uom,name'], // uomId
+            'upc' => ['required', 'string', 'max:31'],
             'partType' => ['required', 'string', 'exists:parttype,name'], // typeId
             'active' => ['required', 'boolean'], // active Flag
-            'abcCode' => ['nullable', 'string', 'max:1'],
-            'weight' => ['nullable', 'numeric'],
-            'weightUom' => ['nullable', 'integer'], // weightuomId
-            'width' => ['nullable', 'numeric'],
-            'lenght' => ['nullable', 'numeric'], // lenght
-            'sizeUom' => ['nullable', 'integer'], // size Uom Id
+            'abcCode' => ['required', 'string', 'max:1'],
+            'weight' => ['required', 'numeric'],
+            'weightUom' => ['required', 'integer'], // weightuomId
+            'width' => ['required', 'numeric'],
+            'length' => ['required', 'numeric'], // lenght
+            'sizeUom' => ['required', 'integer'], // size Uom Id
             'consumptionRate' => ['required', 'numeric'],
-            'alertNote' => ['nullable', 'string', 'max:256'],
-            'pictureUrl' => ['nullable', 'string', 'max:256', 'url'], // url
-            'revision' => ['nullable', 'string', 'max:15'],
-            'poItemType' => ['nullable', 'integer', 'exists:poitemtype,name'], // defualtPoItemTypeId
-            'defaultOutsourcedReturnItem' => ['nullable', 'integer'], // defaultOutsourcedReturnItemId
+            'alertNote' => ['required', 'string', 'max:256'],
+            'pictureUrl' => ['required', 'string', 'max:256', 'url'], // url
+            'revision' => ['required', 'string', 'max:15'],
+            'poItemType' => ['required', 'string', 'exists:poitemtype,name'], // defualtPoItemTypeId
+            'defaultOutsourcedReturnItem' => ['required', 'integer'], // defaultOutsourcedReturnItemId
             'primaryTracking' => ['required', 'string'],
             'tracks' => ['required', 'string'],
             'nextValue' => ['required', 'string'],
-            'cf' => ['nullable', 'string'], // customFields
+            'cf' => ['required', 'string'], // customFields
         ];
     }
 

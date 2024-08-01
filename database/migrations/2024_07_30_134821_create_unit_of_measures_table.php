@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->boolean('activeFlag');
             $table->string('code', 10)->unique();
-            $table->boolean('defaultRecord');
+            $table->boolean('defaultRecord')->default(true);
             $table->string('description', 256);
-            $table->boolean('integral');
+            $table->boolean('integral')->default(true);
             $table->string('name', 30)->unique();
             $table->boolean('readOnly');
             $table->unsignedInteger('uomType');

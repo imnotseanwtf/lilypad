@@ -46,6 +46,7 @@ return new class extends Migration
             $table->string('url', 30)->nullable();
             $table->unsignedBigInteger('issuableStatusId')->nullable();
             $table->unsignedBigInteger('carrierServiceId')->nullable();
+            $table->string('cf')->nullable();
             $table->unique('name', 'u_name');
             $table->unique('number', 'u_number');
             $table->unique('parentId', 'u_parentId');

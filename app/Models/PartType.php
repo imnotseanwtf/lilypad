@@ -7,5 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PartType extends Model
 {
+    protected $table = 'parttype';
+
     use HasFactory;
 }

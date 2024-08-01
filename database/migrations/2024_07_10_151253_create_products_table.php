@@ -22,12 +22,12 @@ return new class extends Migration
             $table->integer('defaultSoItemType');
             $table->string('description', 252)->nullable();
             $table->longText('details');
-            $table->integer('displayTypeId');
-            $table->decimal('heigh', 28, 9)->nullable();
-            $table->integer('incomeAccountId');
+            $table->integer('displayTypeId')->nullable();
+            $table->decimal('height', 28, 9)->nullable();
+            $table->integer('incomeAccountId')->nullable();
             $table->boolean('kitFlag')->default(0);
             $table->boolean('kitGroupedFlag')->default(0);
-            $table->decimal('len', 28, 9)->nullable();
+            $table->decimal('lenght', 28, 9)->nullable();
             $table->string('num', 70)->nullable();
             $table->integer('partId')->nullable();
             $table->decimal('price', 28, 9)->nullable();
@@ -45,6 +45,7 @@ return new class extends Migration
             $table->decimal('weight', 28, 9)->nullable();
             $table->integer('weightUomId')->nullable();
             $table->decimal('width', 28, 9)->nullable();
+            $table->string('cf')->nullable();
             $table->unique('num');
             $table->index([
                 'weightUomId', 'uomId', 'qbClassId', 'partId', 'incomeAccountId', 'displayTypeId', 'defaultSoItemType', 'taxId', 'sizeUomId', 
