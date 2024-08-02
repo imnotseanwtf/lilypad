@@ -157,31 +157,58 @@ class SalesOrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSalesOrderRequest $request, SalesOrder $salesOrder): JsonResponse
+    public function update(UpdateSalesOrderRequest $updateSalesOrderRequest, SalesOrder $salesOrder): JsonResponse
     {
         try {
-            // Fetch the associated entities based on the request data
             $data = [
-                'billToCountry' => Country::where('name', $request->billToCountry)->firstOrFail(),
-                'billToState' => State::where('name', $request->billToState)->firstOrFail(),
-                'shipToCountry' => Country::where('name', $request->shipToCountry)->firstOrFail(),
-                'shipToState' => State::where('name', $request->shipToState)->firstOrFail(),
-                'qbclass' => qbClass::where('name', $request->quickBookClassName)->firstOrFail(),
-                'status' => SalesOrderStatus::where('name', $request->status)->firstOrFail(),
-                'currency' => Currency::where('name', $request->currencyName)->firstOrFail(),
-                'carrier' => Carrier::where('name', $request->carrierName)->firstOrFail(),
-                'carrierService' => CarrierService::where('name', $request->carrierService)->firstOrFail(),
-                'taxRate' => TaxRate::where('name', $request->taxRateName)->firstOrFail(),
+                'billToCountry' => Country::where('name', $updateSalesOrderRequest->billToCountry)->firstOrFail(),
+                'billToState' => State::where('name', $updateSalesOrderRequest->billToState)->firstOrFail(),
+                'shipToCountry' => Country::where('name', $updateSalesOrderRequest->shipToCountry)->firstOrFail(),
+                'shipToState' => State::where('name', $updateSalesOrderRequest->shipToState)->firstOrFail(),
+                'qbclass' => qbClass::where('name', $updateSalesOrderRequest->quickBookClassName)->firstOrFail(),
+                'status' => SalesOrderStatus::where('id', $updateSalesOrderRequest->status)->firstOrFail(),
+                'currency' => Currency::where('name', $updateSalesOrderRequest->currencyName)->firstOrFail(),
+                'carrier' => Carrier::where('name', $updateSalesOrderRequest->carrierName)->firstOrFail(),
+                'carrierService' => CarrierService::where('name', $updateSalesOrderRequest->carrierService)->firstOrFail(),
+                'taxRate' => TaxRate::where('name', $updateSalesOrderRequest->taxRateName)->firstOrFail(),
             ];
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
 
-            // Update Customer information
-            $customer = Customer::updateOrCreate(
-                ['name' => $request->customerName],
-                ['status' => $data['status']->id]
-            );
+        $customer = Customer::firstOrCreate(['name' => $updateSalesOrderRequest->customerName]);
 
-            // Update Sales Order
-            $salesOrder->update($request->except('items') + [
+        $salesOrder->update(
+            $updateSalesOrderRequest->only([
+                'customerName',
+                'customerContact',
+                'billToName',
+                'billToAddress',
+                'billToCity',
+                'billToZip',
+                'shipToName',
+                'shipToAddress',
+                'shipToCity',
+                'shipToZip',
+                'orderDateScheduled',
+                'poNum',
+                'vendorPONum',
+                'date',
+                'dateExpired',
+                'salesman',
+                'shippingTerms',
+                'priorityId',
+                'paymentTerms',
+                'fob',
+                'note',
+                'locationGroupName',
+                'phone',
+                'email',
+                'url',
+                'category',
+                'customField',
+                'currencyRate',
+            ]) + [
                 'billToCountryId' => $data['billToCountry']->id,
                 'billToStateId' => $data['billToState']->id,
                 'shipToCountryId' => $data['shipToCountry']->id,
@@ -192,66 +219,55 @@ class SalesOrderController extends Controller
                 'customerId' => $customer->id,
                 'carrierId' => $data['carrier']->id,
                 'carrierServiceId' => $data['carrierService']->id,
-                'residentialFlag' => $request->shipToResidential,
+                'residentialFlag' => $updateSalesOrderRequest->shipToResidential,
                 'qbClassId' => $data['qbclass']->id,
-                'num' => $request->soNum ?? $salesOrder->num,
-            ]);
+                'num' => $updateSalesOrderRequest->soNum ?? $salesOrder->num,
+            ]
+        );
 
-            // Update Sales Order Items
-            $salesOrderItems = [];
+        // Remove existing items
+        $salesOrder->items()->delete();
 
-            foreach ($request->validated()['items'] as $item) {
-                try {
-                    $product = Product::where('num', $item['productNumber'])->firstOrFail();
-                } catch (ModelNotFoundException $e) {
-                    return response()->json([
-                        'error' => 'Product not found',
-                        'message' => "Product with number {$item['productNumber']} does not exist."
-                    ], Response::HTTP_NOT_FOUND);
-                }
+        $salesOrderItems = [];
 
-                $qbClass = qbClass::firstOrCreate(['name' => $item['itemQuickBooksClassName']]);
+        foreach ($updateSalesOrderRequest->validated()['items'] as $item) {
+            $product = Product::where('num', $item['productNumber'])->firstOrFail();
+            $qbClass = qbClass::firstOrCreate(['name' => $item['itemQuickBooksClassName']]);
 
-                $transformedItem = [
-                    'note' => $item['note'],
-                    'typeId' => $item['soItemTypeId'],
-                    'oumId' => $item['uom'],
-                    'productId' => $product->id,
-                    'productNum' => $item['productNumber'],
-                    'showItemFlag' => $item['showItem'],
-                    'taxRateCode' => $item['taxCode'],
-                    'taxableFlag' => $item['taxable'],
-                    'customerPartNum' => $item['customerPartNumber'],
-                    'description' => $item['productDescription'],
-                    'qtyOrdered' => $item['productQuantity'],
-                    'unitPrice' => $item['productPrice'],
-                    'dateScheduledFulfillment' => $item['itemDateScheduled'],
-                    'revLevel' => $item['revisionLevel'],
-                    'customFieldItem' => $item['cfi'],
-                    'soId' => $salesOrder->id,
-                    'qbClassId' => $qbClass->id,
-                ];
+            $transformedItem = [
+                'note' => $item['note'],
+                'typeId' => $item['soItemTypeId'],
+                'oumId' => $item['uom'],
+                'productId' => $product->id,
+                'productNum' => $item['productNumber'],
+                'showItemFlag' => $item['showItem'],
+                'taxRateCode' => $item['taxCode'],
+                'taxableFlag' => $item['taxable'],
+                'customerPartNum' => $item['customerPartNumber'],
+                'description' => $item['productDescription'],
+                'qtyOrdered' => $item['productQuantity'],
+                'unitPrice' => $item['productPrice'],
+                'dateScheduledFulfillment' => $item['itemDateScheduled'],
+                'revLevel' => $item['revisionLevel'],
+                'customFieldItem' => $item['cfi'],
+                'soId' => $salesOrder->id,
+                'qbClassId' => $qbClass->id,
+                'statusId' => $data['status']->id,
+            ];
 
-                $salesOrderItems[] = SalesOrderItems::updateOrCreate(
-                    ['soId' => $salesOrder->id, 'productId' => $product->id],
-                    $transformedItem
-                );
-            }
-
-            return response()->json(
-                [
-                    'message' => 'Sales Order updated successfully',
-                    'salesOrderData' => $salesOrder,
-                    'salesOrderItemData' => $salesOrderItems,
-                ],
-                Response::HTTP_OK
-            );
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $salesOrderItems[] = SalesOrderItems::create($transformedItem);
         }
+
+        return response()->json(
+            [
+                'message' => 'Sales Order updated successfully',
+                'salesOrderData' => $salesOrder,
+                'salesOrderItemData' => $salesOrderItems,
+            ],
+            Response::HTTP_OK
+        );
     }
+
 
     /**
      * Remove the specified resource from storage.
