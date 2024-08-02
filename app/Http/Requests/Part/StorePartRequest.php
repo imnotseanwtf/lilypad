@@ -36,7 +36,7 @@ class StorePartRequest extends FormRequest
             'weight' => ['required', 'numeric'],
             'weightUom' => ['required', 'integer'], // weightuomId
             'width' => ['required', 'numeric'],
-            'length' => ['required', 'numeric'], // lenght
+            'length' => ['required', 'numeric'], // length
             'sizeUom' => ['required', 'integer'], // size Uom Id
             'consumptionRate' => ['required', 'numeric'],
             'alertNote' => ['required', 'string', 'max:256'],

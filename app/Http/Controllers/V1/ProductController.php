@@ -43,7 +43,7 @@ class ProductController extends Controller
                     'weight',
                     'width',
                     'height',
-                    'lenght',
+                    'length',
                     'alertNote',
                     'cf'
                 ]
@@ -62,16 +62,13 @@ class ProductController extends Controller
                     'sku' => $storeProductRequest->productSku,
                     'defaultSoItemType' => $soItem->id,
                     'uomId' => $uom->id,
-
-                    // 'displayTypeId' => 1,
-                    // 'incomeAccountId' => 1,
                 ]
         );
 
         return response()->json(
             [
+                'message' => 'Product Create Successfully!',
                 'product' => $product,
-                'message' => 'Product Create Successfully!'
             ],
             Response::HTTP_CREATED
         );

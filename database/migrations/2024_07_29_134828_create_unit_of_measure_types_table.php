@@ -21,7 +21,7 @@ return new class extends Migration
             [
                 ['name' => 'Count'],
                 ['name' => 'Weight'],
-                ['name' => 'Lenght'],
+                ['name' => 'Length'],
                 ['name' => 'Area'],
                 ['name' => 'Volume'],
                 ['name' => 'Time'],

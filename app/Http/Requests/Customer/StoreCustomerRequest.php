@@ -26,16 +26,16 @@ class StoreCustomerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['nullable', 'string', 'max:41', 'unique:customer,name'],
+            'name' => ['required', 'string', 'max:41', 'unique:customer,name'],
             'addressName' => ['required','string'],  // name
             'addressContact' => ['required','string'],
             'addressType' => ['required','string',  'exists:addresstype,name'], // typeId
             'isDefault' => ['required', 'boolean'], // activeFlag
-            'address' => ['nullable', 'string', 'max:90'], // The address
-            'city' => ['nullable', 'string', 'max:30'], // The city of the address
-            'state' => ['nullable', 'string', 'exists:state,name'], // Related to State
-            'zip' => ['nullable', 'string', 'max:10'], // The zip code 
-            'country' => ['nullable', 'string', 'exists:country,name'], // Related to Country
+            'address' => ['required', 'string', 'max:90'], // The address
+            'city' => ['required', 'string', 'max:30'], // The city of the address
+            'state' => ['required', 'string', 'exists:state,name'], // Related to State
+            'zip' => ['required', 'string', 'max:10'], // The zip code 
+            'country' => ['required', 'string', 'exists:country,name'], // Related to Country
             'resident' => ['required', 'boolean'],
             'main' => ['required', 'string'],
             'home' => ['required', 'string'],
@@ -49,25 +49,25 @@ class StoreCustomerRequest extends FormRequest
             'currencyName' => ['required', 'string', 'exists:currency,name'],
             'currencyRate' => ['required', 'numeric'],
             'group' => ['required', 'string'],
-            'creditLimit' => ['nullable', 'numeric'], // The customer's credit limit
-            'status' => ['nullable', 'string', 'exists:customerstatus,name'], // statusId
-            'active' => ['nullable', 'boolean',], // activeFlag
-            'taxRate' => ['nullable', 'string', 'exists:taxrate,name'], // taxRateId 
-            'salesman' => ['nullable', 'integer'], // defaultSalesmanId
+            'creditLimit' => ['required', 'numeric'], // The customer's credit limit
+            'status' => ['required', 'string', 'exists:customerstatus,name'], // statusId
+            'active' => ['required', 'boolean',], // activeFlag
+            'taxRate' => ['required', 'string', 'exists:taxrate,name'], // taxRateId 
+            'salesman' => ['required', 'integer'], // defaultSalesmanId
             'defaultPriority' => ['required', 'string', 'exists:priority,name'], 
-            'number' => ['nullable', 'string', 'max:30', 'unique:customer,name'], 
-            'paymentTerms' => ['nullable', 'string', 'exists:paymentterms,name'], // defaultPaymentTermsId
-            'taxExempt' => ['nullable', 'boolean'], // Specifies if this customer is tax exempt
-            'taxExemptNumber' => ['nullable', 'string', 'max:30'], // The tax exempt number for the customer
-            'url' => ['nullable', 'url', 'max:30'], // The URL for this customer
-            'carrierName' => ['nullable', 'string', 'exists:carrier,name'], // defaultCarrierId
-            'carrierService' => ['nullable', 'string', 'exists:carrierservice,name'], // carrierServiceId
-            'shippingTerms' => ['nullable', 'string'], // defaultShipTermsId
+            'number' => ['required', 'string', 'max:30', "unique:customer,number"], 
+            'paymentTerms' => ['required', 'string', 'exists:paymentterms,name'], // defaultPaymentTermsId
+            'taxExempt' => ['required', 'boolean'], // Specifies if this customer is tax exempt
+            'taxExemptNumber' => ['required', 'string', 'max:30'], // The tax exempt number for the customer
+            'url' => ['required', 'url', 'max:30'], // The URL for this customer
+            'carrierName' => ['required', 'string', 'exists:carrier,name'], // defaultCarrierId
+            'carrierService' => ['required', 'string', 'exists:carrierservice,name'], // carrierServiceId
+            'shippingTerms' => ['required', 'string'], // defaultShipTermsId
             'alertNotes' => ['required', 'string'],
-            'quickBooksClassName' => ['nullable', 'string', 'exists:qbclass,name'], // qbClassId
-            'toBeEmailed' => ['nullable', 'boolean'], // Flags orders for this customer as To Be Emailed
-            'toBePrinted' => ['nullable', 'boolean'], // Flags orders for this customer as To Be Printed
-            'issuableStatus' => ['nullable', 'string'], // issuableStatusId
+            'quickBooksClassName' => ['required', 'string', 'exists:qbclass,name'], // qbClassId
+            'toBeEmailed' => ['required', 'boolean'], // Flags orders for this customer as To Be Emailed
+            'toBePrinted' => ['required', 'boolean'], // Flags orders for this customer as To Be Printed
+            'issuableStatus' => ['required', 'string'], // issuableStatusId
             'cf'=> ['required', 'string'],
         ];
     }

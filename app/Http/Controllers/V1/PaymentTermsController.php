@@ -9,7 +9,6 @@ use App\Models\PaymentTerms;
 use App\Models\PaymentTermsType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class PaymentTermsController extends Controller

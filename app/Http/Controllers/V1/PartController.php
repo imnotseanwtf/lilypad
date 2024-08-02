@@ -63,8 +63,8 @@ class PartController extends Controller
 
         return response()->json(
             [
-                'partData' => $part,
                 'message' => 'Product Created Successfully!',
+                'partData' => $part,
             ],
             Response::HTTP_CREATED
         );
@@ -81,7 +81,7 @@ class PartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePartRequest $updatePartRequest,Part $part): JsonResponse
+    public function update(UpdatePartRequest $updatePartRequest, Part $part): JsonResponse
     {
         try {
             // Find related models based on the request data

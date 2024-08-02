@@ -74,7 +74,6 @@ class CustomerController extends Controller
             )
                 +
                 [
-                    // 'accountId' => 1,
                     'currencyId' => $currency->id,
                     'statusId' => $customerStatus->id,
                     'activeFLag' => $storeCustomerRequest->active,
@@ -97,7 +96,7 @@ class CustomerController extends Controller
                 ]
             ) +
                 [
-                    // 'accountId' => 1,
+                    'accountId' => 1,
                     'piplineContactNum' => $storeCustomerRequest->addressContact,
                     'typeId' => $addressType->id,
                     'activeFlag' => $storeCustomerRequest->isDefault,

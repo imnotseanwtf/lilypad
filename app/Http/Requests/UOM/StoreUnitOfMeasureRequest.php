@@ -27,7 +27,7 @@ class StoreUnitOfMeasureRequest extends FormRequest
             'abbrev' => ['required', 'string'],
             'readOnly' => ['required', 'boolean'],
             'active' => ['required','boolean'],
-            'uomTypeId'=> ['required','integer ', 'exists:uomtype,id'],
+            'uomTypeId'=> ['required', 'integer', 'exists:uomtype,id'],
         ];
     }
 }

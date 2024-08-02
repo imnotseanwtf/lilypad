@@ -33,7 +33,7 @@ class QuickBookClassController extends Controller
      */
     public function store(StoreQuickBookClassRequest $storeQuickBookClassRequest): JsonResponse
     {
-        $quickBook = qbClass::create($storeQuickBookClassRequest->only('name') + ['active' => $storeQuickBookClassRequest->active]);
+        $quickBook = qbClass::create($storeQuickBookClassRequest->only('name') + ['activeFlag' => $storeQuickBookClassRequest->active]);
 
         return response()->json(
             [

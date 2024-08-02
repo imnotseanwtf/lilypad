@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer('incomeAccountId')->nullable();
             $table->boolean('kitFlag')->default(0);
             $table->boolean('kitGroupedFlag')->default(0);
-            $table->decimal('lenght', 28, 9)->nullable();
+            $table->decimal('length', 28, 9)->nullable();
             $table->string('num', 70)->nullable();
             $table->integer('partId')->nullable();
             $table->decimal('price', 28, 9)->nullable();
