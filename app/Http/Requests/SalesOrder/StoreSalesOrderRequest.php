@@ -87,7 +87,7 @@ class StoreSalesOrderRequest extends FormRequest
             // Custom Field
             'customField' => ['required', 'string', 'max:255'], // CF-Custom
 
-            'currencyName' => ['required', 'string', 'max:255', 'exists:    ,name'],
+            'currencyName' => ['required', 'string', 'max:255', 'exists:currency,name'],
             'currencyRate' => ['required', 'numeric'],
             'priceIsHomeCurrency' => ['required', 'numeric'],
 
