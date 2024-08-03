@@ -26,6 +26,7 @@ class StoreSalesOrderRequest extends FormRequest
     {
         return [
             // General Information
+            'flag' => ['required', 'boolean'],
             'soNum' => ['nullable', 'integer'],
             'status' => ['required', 'integer', 'exists:sostatus,id'], // Status
             'customerName' => ['required', 'string', 'max:100'], // CustomerName
@@ -65,7 +66,7 @@ class StoreSalesOrderRequest extends FormRequest
 
             // Sales Information
             'salesman' => ['required', 'string', 'max:100'], // Salesman
-            'shippingTerms' => ['required', 'integer', 'in:10,20,30'], // ShippingTerms
+            'shippingTerms' => ['required', 'string', 'exists:shipterms,name'], // ShippingTerms
             'paymentTerms' => ['required', 'string', 'max:50'], // PaymentTerms
             'fob' => ['required', 'string', 'max:50'], // FOB
             'note' => ['required', 'string', 'max:500'], // Note

@@ -47,7 +47,7 @@ class CustomerController extends Controller
             $paymentTerms = PaymentTerms::where('name', $storeCustomerRequest->paymentTerms)->firstOrFail();
             $carrier = Carrier::where('name', $storeCustomerRequest->carrierName)->firstOrFail();
             $carrierService = CarrierService::where('name', $storeCustomerRequest->carrierService)->firstOrFail();
-            // $shipTerms = ShipTerms::where('name', $storeCustomerRequest->shippingTerms)->firstOrFail();
+            $shipTerms = ShipTerms::where('name', $storeCustomerRequest->shippingTerms)->firstOrFail();
             $quickBook = qbClass::where('name', $storeCustomerRequest->quickBooksClassName)->firstOrFail();
 
             $addressType = AddressType::where('name', $storeCustomerRequest->addressType)->firstOrFail();
@@ -82,6 +82,7 @@ class CustomerController extends Controller
                     'defaultCarrierId' => $carrier->id,
                     'carrierServiceId' => $carrierService->id,
                     'qbClassId' => $quickBook->id,
+                    'defaultShipTermsId' => $shipTerms->id,
                 ]
         );
 
@@ -96,7 +97,6 @@ class CustomerController extends Controller
                 ]
             ) +
                 [
-                    'accountId' => 1,
                     'piplineContactNum' => $storeCustomerRequest->addressContact,
                     'typeId' => $addressType->id,
                     'activeFlag' => $storeCustomerRequest->isDefault,

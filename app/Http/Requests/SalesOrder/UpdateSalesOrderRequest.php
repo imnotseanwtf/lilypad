@@ -26,6 +26,7 @@ class UpdateSalesOrderRequest extends FormRequest
     {
         return [
             // General Information
+            'flag' => ['required', 'boolean'],
             'soNum' => ['nullable', 'integer'],
             'status' => ['required', 'integer', 'exists:sostatus,id'], // Status
             'customerName' => ['required', 'string', 'max:100'], // CustomerName

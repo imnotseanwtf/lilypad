@@ -15,6 +15,7 @@ use App\Models\qbClass;
 use App\Models\SalesOrder;
 use App\Models\SalesOrderItems;
 use App\Models\SalesOrderStatus;
+use App\Models\ShipTerms;
 use App\Models\State;
 use App\Models\TaxRate;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -50,6 +51,7 @@ class SalesOrderController extends Controller
                 'carrier' => Carrier::where('name', $storeSalesOrderRequest->carrierName)->firstOrFail(),
                 'carrierService' => CarrierService::where('name', $storeSalesOrderRequest->carrierService)->firstOrFail(),
                 'taxRate' => TaxRate::where('name', $storeSalesOrderRequest->taxRateName)->firstOrFail(),
+                'shipterms' => ShipTerms::where('name', $storeSalesOrderRequest->shippingTerms)->firstOrFail(),
             ];
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
@@ -78,7 +80,6 @@ class SalesOrderController extends Controller
                 'date',
                 'dateExpired',
                 'salesman',
-                'shippingTerms',
                 'priorityId',
                 'paymentTerms',
                 'fob',
@@ -91,6 +92,8 @@ class SalesOrderController extends Controller
                 'customField',
                 'currencyRate',
             ]) + [
+                'activeFlag' => $storeSalesOrderRequest->flag,
+                'shipTermsId' => $data['shipterms']->id,
                 'billToCountryId' => $data['billToCountry']->id,
                 'billToStateId' => $data['billToState']->id,
                 'shipToCountryId' => $data['shipToCountry']->id,
@@ -171,6 +174,7 @@ class SalesOrderController extends Controller
                 'carrier' => Carrier::where('name', $updateSalesOrderRequest->carrierName)->firstOrFail(),
                 'carrierService' => CarrierService::where('name', $updateSalesOrderRequest->carrierService)->firstOrFail(),
                 'taxRate' => TaxRate::where('name', $updateSalesOrderRequest->taxRateName)->firstOrFail(),
+                'shipterms' => ShipTerms::where('name', $updateSalesOrderRequest->shippingTerms)->firstOrFail(),
             ];
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
@@ -196,7 +200,6 @@ class SalesOrderController extends Controller
                 'date',
                 'dateExpired',
                 'salesman',
-                'shippingTerms',
                 'priorityId',
                 'paymentTerms',
                 'fob',
@@ -209,6 +212,8 @@ class SalesOrderController extends Controller
                 'customField',
                 'currencyRate',
             ]) + [
+                'activeFlag' => $updateSalesOrderRequest->flag,
+                'shipTermsId' => $data['shipterms'],
                 'billToCountryId' => $data['billToCountry']->id,
                 'billToStateId' => $data['billToState']->id,
                 'shipToCountryId' => $data['shipToCountry']->id,
