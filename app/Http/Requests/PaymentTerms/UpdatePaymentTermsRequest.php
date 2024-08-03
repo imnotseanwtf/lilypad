@@ -4,6 +4,11 @@ namespace App\Http\Requests\PaymentTerms;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response;
+
 class UpdatePaymentTermsRequest extends FormRequest
 {
     /**
@@ -11,7 +16,7 @@ class UpdatePaymentTermsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +27,28 @@ class UpdatePaymentTermsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'termsName' => ['required', 'string', 'unique:paymentterms,name'], // name
+            'termsType' =>  ['required', 'string' , 'exists:paymenttermstype,name'], // typeId
+            'netDays' => ['required', 'numeric'],
+            'discount' => ['required', 'numeric'],
+            'discountDays' => ['required', 'numeric'],
+            'dueDate' => ['required', 'date'],
+            'nextMonth'=> ['required', 'date'],
+            'discountDate' => ['required', 'date'],
+            'default' => ['required', 'boolean'], // defaultTerms
+            'active' => ['required','boolean'], // activeFlag
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json(
+            [
+                'success' => false,
+                'message' => 'Validation errors',
+                'data' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY
+        ));
     }
 }

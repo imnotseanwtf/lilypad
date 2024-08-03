@@ -4,6 +4,10 @@ namespace App\Http\Requests\PaymentTerms;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response;
+
 class StorePaymentTermsRequest extends FormRequest
 {
     /**
@@ -34,4 +38,18 @@ class StorePaymentTermsRequest extends FormRequest
             'active' => ['required','boolean'], // activeFlag
         ];
     }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json(
+            [
+                'success' => false,
+                'message' => 'Validation errors',
+                'data' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY
+        ));
+    }
+
+    
 }
