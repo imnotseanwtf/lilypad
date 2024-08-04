@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('accounttype', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 30)->nullable();
-            $table->unique('name', 'u_name');
+            $table->string('name', 30)->nullable()->unique();
         });
     }
 

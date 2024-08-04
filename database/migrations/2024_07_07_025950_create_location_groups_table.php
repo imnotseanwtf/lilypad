@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('locationgroup', function (Blueprint $table) {
             $table->id();
-            $table->boolean('activeFlag')->default(0);
+            $table->boolean('activeFlag')->default(false);
             $table->dateTime('dateLastModified')->nullable();
             $table->string('name', 30)->unique();
-            $table->integer('qbClassId')->nullable();
-            $table->timestamps();
+            $table->unsignedBigInteger('qbClassId')->nullable();
         });
     }
 

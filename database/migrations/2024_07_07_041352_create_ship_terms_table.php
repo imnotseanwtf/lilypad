@@ -22,8 +22,8 @@ return new class extends Migration
 
         DB::table('shipterms')->insert([
             ['id' => 10, 'name' => 'Prepaid & Billed'],
-            ['id' => 10, 'name' => 'Prepaid'],
-            ['id' => 10, 'name' => 'Freight Collect'],
+            ['id' => 20, 'name' => 'Prepaid'],
+            ['id' => 30, 'name' => 'Freight Collect'],
         ]);
     }
 

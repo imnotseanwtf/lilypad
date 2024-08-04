@@ -20,7 +20,7 @@ return new class extends Migration
             $table->boolean('integral')->default(true);
             $table->string('name', 30)->unique();
             $table->boolean('readOnly');
-            $table->unsignedInteger('uomType');
+            $table->foreignId('uomType')->constrained('uomtype');
         });
     }
 

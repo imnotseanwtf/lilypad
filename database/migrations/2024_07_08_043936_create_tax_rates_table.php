@@ -21,12 +21,12 @@ return new class extends Migration
             $table->dateTime('dateLastModified')->nullable();
             $table->boolean('defaultFlag')->default(true);
             $table->string('description', 255)->nullable();
-            $table->string('name', 31)->nullable()->unique('u_name');
+            $table->string('name', 31)->nullable()->unique();
             $table->integer('orderTypeId')->nullable();
             $table->double('rate')->nullable();
             $table->integer('taxAccountId')->nullable();
             $table->string('typeCode', 25)->nullable();
-            $table->integer('typeId')->nullable();
+            $table->foreignId('typeId')->nullable()->constrained('taxratetype');
             $table->dateTime('unitCost')->nullable();
             $table->integer('vendorId')->nullable();
             $table->index(['orderTypeId', 'taxAccountId', 'typeId', 'vendorId'], 'Performance');
