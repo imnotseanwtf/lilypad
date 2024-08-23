@@ -1,13 +1,5 @@
 <?php
 
-use App\Models\AccountType;
-use App\Models\Carrier;
-use App\Models\CarrierService;
-use App\Models\Country;
-use App\Models\Currency;
-use App\Models\Customer;
-use App\Models\State;
-use App\Models\Tax;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -80,7 +72,6 @@ return new class extends Migration
             $table->foreignId('shipToStateId')->nullable()->constrained('state');
             $table->foreignId('statusId')->nullable()->constrained('sostatus');
             $table->foreignId('taxRateId')->nullable()->constrained('taxrate');
-            
         });
     }
 

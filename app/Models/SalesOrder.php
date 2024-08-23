@@ -71,4 +71,6 @@ class SalesOrder extends Model
         'username', // nullable
         'vendorPO', // nullable
     ];
+
+    public $timestamps = false;
 }

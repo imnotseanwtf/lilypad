@@ -17,6 +17,7 @@ class StorePartRequest extends FormRequest
         return true;
     }
 
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -45,7 +46,7 @@ class StorePartRequest extends FormRequest
             'poItemType' => ['required', 'string', 'exists:poitemtype,name'], // defualtPoItemTypeId
             'defaultOutsourcedReturnItem' => ['required', 'integer'], // defaultOutsourcedReturnItemId
             'primaryTracking' => ['required', 'string'],
-            'tracks' => ['required', 'string'],
+            'tracks' => ['required', 'string', 'exists:parttrackingtype,name'],
             'nextValue' => ['required', 'string'],
             'cf' => ['required', 'string'], // customFields
         ];

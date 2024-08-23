@@ -10,4 +10,6 @@ class PartType extends Model
     protected $table = 'parttype';
 
     use HasFactory;
+
+    public $timestamps = false;
 }

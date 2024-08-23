@@ -39,23 +39,19 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $storeCustomerRequest): JsonResponse
     {
-        try {
-            $currency = Currency::where('name', $storeCustomerRequest->currencyName)->firstOrFail();
-            $customerStatus = CustomerStatus::where('name', $storeCustomerRequest->status)->firstOrFail();
-            $taxRate = TaxRate::where('name', $storeCustomerRequest->taxRate)->firstOrFail();
-            $priority = Priority::where('name', $storeCustomerRequest->defaultPriority)->firstOrFail();
-            $paymentTerms = PaymentTerms::where('name', $storeCustomerRequest->paymentTerms)->firstOrFail();
-            $carrier = Carrier::where('name', $storeCustomerRequest->carrierName)->firstOrFail();
-            $carrierService = CarrierService::where('name', $storeCustomerRequest->carrierService)->firstOrFail();
-            $shipTerms = ShipTerms::where('name', $storeCustomerRequest->shippingTerms)->firstOrFail();
-            $quickBook = qbClass::where('name', $storeCustomerRequest->quickBooksClassName)->firstOrFail();
+        $currency = Currency::where('name', $storeCustomerRequest->currencyName)->firstOrFail();
+        $customerStatus = CustomerStatus::where('name', $storeCustomerRequest->status)->firstOrFail();
+        $taxRate = TaxRate::where('name', $storeCustomerRequest->taxRate)->firstOrFail();
+        $priority = Priority::where('name', $storeCustomerRequest->defaultPriority)->firstOrFail();
+        $paymentTerms = PaymentTerms::where('name', $storeCustomerRequest->paymentTerms)->firstOrFail();
+        $carrier = Carrier::where('name', $storeCustomerRequest->carrierName)->firstOrFail();
+        $carrierService = CarrierService::where('name', $storeCustomerRequest->carrierService)->firstOrFail();
+        $shipTerms = ShipTerms::where('name', $storeCustomerRequest->shippingTerms)->firstOrFail();
+        $quickBook = qbClass::where('name', $storeCustomerRequest->quickBooksClassName)->firstOrFail();
 
-            $addressType = AddressType::where('name', $storeCustomerRequest->addressType)->firstOrFail();
-            $state = State::where('name', $storeCustomerRequest->state)->firstOrFail();
-            $country = Country::where('name', $storeCustomerRequest->country)->firstOrFail();
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        };
+        $addressType = AddressType::where('name', $storeCustomerRequest->addressType)->firstOrFail();
+        $state = State::where('name', $storeCustomerRequest->state)->firstOrFail();
+        $country = Country::where('name', $storeCustomerRequest->country)->firstOrFail();
 
         $customer = Customer::create(
             $storeCustomerRequest->only(
@@ -129,26 +125,23 @@ class CustomerController extends Controller
      */
     public function update(UpdateCustomerRequest $request, Customer $customer): JsonResponse
     {
-        try {
-            $account = Account::findOrFail($customer->account_id);
-            $address = Address::where('customer_id', $customer->id)->firstOrFail();
+        $account = Account::findOrFail($customer->account_id);
+        $address = Address::where('customer_id', $customer->id)->firstOrFail();
 
-            $currency = Currency::where('name', $request->currencyName)->firstOrFail();
-            $customerStatus = CustomerStatus::where('name', $request->status)->firstOrFail();
-            $taxRate = TaxRate::where('name', $request->taxRate)->firstOrFail();
-            $priority = Priority::where('name', $request->defaultPriority)->firstOrFail();
-            $paymentTerms = PaymentTerms::where('name', $request->paymentTerms)->firstOrFail();
-            $carrier = Carrier::where('name', $request->carrierName)->firstOrFail();
-            $carrierService = CarrierService::where('name', $request->carrierService)->firstOrFail();
-            $shipTerms = ShipTerms::where('name', $request->shippingTerms)->firstOrFail();
-            $quickBook = QbClass::where('name', $request->quickBooksClassName)->firstOrFail();
+        $currency = Currency::where('name', $request->currencyName)->firstOrFail();
+        $customerStatus = CustomerStatus::where('name', $request->status)->firstOrFail();
+        $taxRate = TaxRate::where('name', $request->taxRate)->firstOrFail();
+        $priority = Priority::where('name', $request->defaultPriority)->firstOrFail();
+        $paymentTerms = PaymentTerms::where('name', $request->paymentTerms)->firstOrFail();
+        $carrier = Carrier::where('name', $request->carrierName)->firstOrFail();
+        $carrierService = CarrierService::where('name', $request->carrierService)->firstOrFail();
+        $shipTerms = ShipTerms::where('name', $request->shippingTerms)->firstOrFail();
+        $quickBook = QbClass::where('name', $request->quickBooksClassName)->firstOrFail();
 
-            $addressType = AddressType::where('name', $request->addressType)->firstOrFail();
-            $state = State::where('name', $request->state)->firstOrFail();
-            $country = Country::where('name', $request->country)->firstOrFail();
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
+        $addressType = AddressType::where('name', $request->addressType)->firstOrFail();
+        $state = State::where('name', $request->state)->firstOrFail();
+        $country = Country::where('name', $request->country)->firstOrFail();
+
 
         $account->update(['typeId' => $request->accountTypeId]);
 

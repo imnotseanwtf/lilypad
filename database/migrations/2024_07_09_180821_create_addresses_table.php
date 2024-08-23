@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\AccountType;
-use App\Models\State;
-use App\Models\Country;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -25,10 +22,10 @@ return new class extends Migration
             $table->string('address', 90);
             $table->string('zip', 10)->nullable();
 
-            $table->foreignId('countryId')->constrained('country')->nullable();
-            $table->foreignId('typeID')->constrained('addresstype')->nullable();
-            $table->foreignId('stateId')->constrained('state')->nullable();
-            $table->foreignId('locationGroupId')->constrained('locationgroup')->nullable();
+            $table->foreignId('countryId')->nullable()->constrained('country');
+            $table->foreignId('typeId')->nullable()->constrained('addresstype');
+            $table->foreignId('stateId')->nullable()->constrained('state');
+            $table->foreignId('locationGroupId')->nullable()->constrained('locationgroup');
 
             $table->index(['accountId', 'locationGroupId', 'stateId', 'typeID', 'countryId'], 'Performance');
         });

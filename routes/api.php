@@ -10,6 +10,7 @@ use App\Http\Controllers\V1\QuickBookClassController;
 use App\Http\Controllers\V1\SalesOrderController;
 use App\Http\Controllers\V1\TaxRateController;
 use App\Http\Controllers\V1\UnitOfMeasureController;
+use App\Http\Controllers\V1\VendorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,10 +19,11 @@ Route::get('/user', function (Request $request) {
 });
 
 Route::apiResources([
-    'sales-order' => SalesOrderController::class,   
+    'sales-order' => SalesOrderController::class,
     'product' => ProductController::class,
     'customer' => CustomerController::class,
     'part' => PartController::class,
+    'vendor' => VendorController::class,
     'country-state' => CountryAndStateController::class,
     'qbclass' => QuickBookClassController::class,
     'taxrate' => TaxRateController::class,
@@ -30,6 +32,4 @@ Route::apiResources([
     'payment-terms' => PaymentTermsController::class,
 ]);
 
-Route::prefix('v1')->middleware('auth:api')->group(function () {
-   
-});
+Route::prefix('v1')->middleware('auth:api')->group(function () {});

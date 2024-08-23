@@ -27,11 +27,7 @@ class UnitOfMeasureController extends Controller
      */
     public function store(StoreUnitOfMeasureRequest $storeUnitOfMeasureRequest): JsonResponse
     {
-        try {
-            $uomType = UnitOfMeasureType::where('id', $storeUnitOfMeasureRequest->uomTypeId)->firstOrCreate();
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
+        $uomType = UnitOfMeasureType::where('id', $storeUnitOfMeasureRequest->uomTypeId)->firstOrCreate();
 
         $uom = UnitOfMeasure::create(
             $storeUnitOfMeasureRequest->only(
@@ -69,11 +65,7 @@ class UnitOfMeasureController extends Controller
      */
     public function update(UpdateUnitOfMeasureRequest $updateUnitOfMeasureRequest, UnitOfMeasure $uom): JsonResponse
     {
-        try {
-            $uomType = UnitOfMeasureType::where('id', $updateUnitOfMeasureRequest->uomTypeId)->firstOrFail();
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
+        $uomType = UnitOfMeasureType::where('id', $updateUnitOfMeasureRequest->uomTypeId)->firstOrFail();
 
         $uom->update(
             $updateUnitOfMeasureRequest->only(
@@ -110,6 +102,6 @@ class UnitOfMeasureController extends Controller
                 'message' => 'Unit Of Measure Deleted Successfully!',
             ],
             Response::HTTP_OK
-        );  
+        );
     }
 }

@@ -92,7 +92,6 @@ class StoreSalesOrderRequest extends FormRequest
             'currencyRate' => ['required', 'numeric'],
             'priceIsHomeCurrency' => ['required', 'numeric'],
 
-
             // SO ITEM
             'items' => ['required', 'array'],
             'items.*.flag' => ['required', 'boolean'],
@@ -105,7 +104,7 @@ class StoreSalesOrderRequest extends FormRequest
             'items.*.taxable' => ['required', 'boolean'],
             'items.*.taxCode' => ['required', 'integer'],
             'items.*.note' => ['required', 'string'],
-            'items.*.itemQuickBooksClassName' => ['required', 'integer'],  //qbClassId
+            'items.*.itemQuickBooksClassName' => ['required', 'string', 'exists:qbclass,name'],  //qbClassId
             'items.*.itemDateScheduled' => ['required', 'date'], //dateScheduledFulfillment
             'items.*.showItem' => ['required', 'boolean'],
             'items.*.revisionLevel' => ['required', 'string'], // revLevel

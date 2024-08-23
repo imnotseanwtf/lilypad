@@ -62,7 +62,7 @@ class StoreCustomerRequest extends FormRequest
             'url' => ['required', 'url', 'max:30'], // The URL for this customer
             'carrierName' => ['required', 'string', 'exists:carrier,name'], // defaultCarrierId
             'carrierService' => ['required', 'string', 'exists:carrierservice,name'], // carrierServiceId
-            'shippingTerms' => ['required', 'string'], // defaultShipTermsId
+            'shippingTerms' => ['required', 'string', 'exists:shipterms,name'], // defaultShipTermsId
             'alertNotes' => ['required', 'string'],
             'quickBooksClassName' => ['required', 'string', 'exists:qbclass,name'], // qbClassId
             'toBeEmailed' => ['required', 'boolean'], // Flags orders for this customer as To Be Emailed

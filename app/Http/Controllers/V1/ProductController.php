@@ -28,13 +28,10 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $storeProductRequest): JsonResponse
     {
-        try {
-            $part = Part::where('num', $storeProductRequest->partNumber)->firstOrFail();
-            $soItem = SalesOrderItemType::where('name', $storeProductRequest->productSoItemType)->firstOrFail();
-            $uom = UnitOfMeasure::where('name', $storeProductRequest->uom)->firstOrFail();
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
+        $part = Part::where('num', $storeProductRequest->partNumber)->firstOrFail();
+        $soItem = SalesOrderItemType::where('name', $storeProductRequest->productSoItemType)->firstOrFail();
+        $uom = UnitOfMeasure::where('name', $storeProductRequest->uom)->firstOrFail();
+
 
         $product = Product::create(
             $storeProductRequest->only(
@@ -87,14 +84,11 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $updateProductRequest, Product $product): JsonResponse
     {
-        try {
-            // Find related models based on request data
-            $part = Part::where('num', $updateProductRequest->partNumber)->firstOrFail();
-            $soItem = SalesOrderItemType::where('name', $updateProductRequest->productSoItemType)->firstOrFail();
-            $uom = UnitOfMeasure::where('name', $updateProductRequest->uom)->firstOrFail();
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
+
+        $part = Part::where('num', $updateProductRequest->partNumber)->firstOrFail();
+        $soItem = SalesOrderItemType::where('name', $updateProductRequest->productSoItemType)->firstOrFail();
+        $uom = UnitOfMeasure::where('name', $updateProductRequest->uom)->firstOrFail();
+
 
         // Update the product with new data
         $product->update(
