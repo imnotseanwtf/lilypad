@@ -72,6 +72,7 @@ class PickController extends Controller
             [
                 'message' => 'Pick Created Successfully!',
                 'pickData' => $pick,
+                'pickItemData' => $pickItem,
             ],
             Response::HTTP_CREATED
         );
