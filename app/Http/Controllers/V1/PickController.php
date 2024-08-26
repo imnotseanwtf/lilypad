@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Pick\StorePickRequest;
+use App\Models\Pick;
+use App\Models\PickItem;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class PickController extends Controller
 {
@@ -16,19 +21,59 @@ class PickController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePickRequest $storePickRequest): JsonResponse
     {
-        //
+        $pick = Pick::create(
+            $storePickRequest->only([
+                'dateCreated',
+                'dateFinished',
+                'dateLastModified',
+                'dateScheduled',
+                'dateStarted',
+                'locationGroupId',
+                'num',
+                'priority',
+                'userId',
+            ]) +
+                [
+                    'statusId' =>  $storePickRequest->pickStatusId,
+                    'typeId' => $storePickRequest->pickTypeId,
+                ]
+        );
+
+        $pickItem = PickItem::create(
+            $storePickRequest->only([
+                'destTagId',
+                'orderId',
+                'orderTypeId',
+                'partId',
+                'poItemId',
+                'qty',
+                'shipId',
+                'slotNum',
+                'soItemId',
+                'srcLocationId',
+                'srcTagId',
+                'tagId',
+                'uomId',
+                'woItemId',
+                'xoItemId'
+            ]) +
+                [
+                    'statusId' => $storePickRequest->pickItemStatusId,
+                    'typeId' => $storePickRequest->pickItemTypeId,
+                ]
+        );
+
+        return response()->json(
+            [
+                'message' => 'Pick Created Successfully!',
+                'pickData' => $pick,
+            ],
+            Response::HTTP_CREATED
+        );
     }
 
     /**

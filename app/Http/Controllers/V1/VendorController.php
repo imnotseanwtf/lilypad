@@ -43,7 +43,6 @@ class VendorController extends Controller
         $address = Address::create(
             $storeVendorRequest->only(
                 [
-                    'addressName',
                     'address',
                     'city',
                     'zip',
@@ -51,11 +50,11 @@ class VendorController extends Controller
             )
                 +
                 [
-                    'pipelineContactNum' => $storeVendorRequest->addressContact,
                     'typeId' => $storeVendorRequest->addressType,
                     'defaultFlag' => $storeVendorRequest->isDefault,
                     'stateId' => $state->id,
                     'countryId' => $country->id,
+                    'name' => $storeVendorRequest->addressName,
                 ]
         );
 
