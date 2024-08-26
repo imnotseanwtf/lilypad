@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('num', 35)->nullable();
             $table->unsignedBigInteger('userId')->nullable();
 
-            $table->foreignId('locationGroupId')->constrained('locationgroup');
+            $table->unsignedBigInteger('locationGroupId');
             $table->foreignId('statusId')->constrained('pickstatus');
             $table->foreignId('typeId')->constrained('picktype');
             $table->foreignId('priority')->constrained('priority');

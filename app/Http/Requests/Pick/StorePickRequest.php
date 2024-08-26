@@ -28,7 +28,7 @@ class StorePickRequest extends FormRequest
             'dateScheduled' => ['nullable', 'date'],
             'dateStarted' => ['nullable', 'date'],
             'num' => ['required', 'string', 'max:35'],
-            'locationGroupId' => ['required', 'integer', 'exists:locationgroup,id'],
+            'locationGroupId' => ['required', 'integer', ], // 'exists:locationgroup,id'
             'priority' => ['required', 'integer', 'exists:priority,id'],
             'pickStatusId' => ['required', 'integer', 'exists:pickstatus,id'], // statusId
             'pickTypeId' => ['required', 'integer', 'exists:picktype,id'], // typeId
@@ -38,7 +38,7 @@ class StorePickRequest extends FormRequest
             'orderId' => ['required', 'integer'],
             'orderTypeId' => ['required', 'integer', 'exists:ordertype,id'],
             'partId' => ['required', 'integer', 'exists:part,id'],
-            'poItemId' => ['nullable', 'integer', 'exists:poitem,id'],
+            'poItemId' => ['nullable', 'integer', 'exists:poitem,id'], 
             'qty' => ['nullable', 'numeric',],  // decimal(28,9)
             'shipId' => ['nullable', 'integer',],
             'slotNum' => ['nullable', 'integer',],
@@ -48,9 +48,9 @@ class StorePickRequest extends FormRequest
             'pickItemStatusId' => ['required', 'integer', 'exists:pickitemstatus,id'], // statusId
             'tagId' => ['nullable', 'integer',],  // bigint
             'pickItemTypeId' => ['required', 'integer', 'exists:pickitemtype,id'], // typeId
-            'uomId' => ['required', 'integer','exists:uom,id'],
-            'woItemId' => ['nullable', 'integer', ], // 'exists:woitem,id'
-            'xoItemId' => ['nullable', 'integer', ], // 'exists:xoitem,id'
+            'uomId' => ['required', 'integer', 'exists:uom,id'],
+            'woItemId' => ['nullable', 'integer', 'exists:woitem,id'],
+            'xoItemId' => ['nullable', 'integer', 'exists:xoitem,id'],
         ];
     }
 }

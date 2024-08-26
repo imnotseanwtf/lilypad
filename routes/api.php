@@ -5,6 +5,7 @@ use App\Http\Controllers\V1\CurrencyController;
 use App\Http\Controllers\V1\CustomerController;
 use App\Http\Controllers\V1\PartController;
 use App\Http\Controllers\V1\PaymentTermsController;
+use App\Http\Controllers\V1\PickController;
 use App\Http\Controllers\V1\ProductController;
 use App\Http\Controllers\V1\QuickBookClassController;
 use App\Http\Controllers\V1\SalesOrderController;
@@ -18,6 +19,7 @@ Route::get('/user', function (Request $request) {
 });
 
 Route::apiResources([
+    'pick' => PickController::class,
     'sales-order' => SalesOrderController::class,
     'product' => ProductController::class,
     'customer' => CustomerController::class,

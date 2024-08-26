@@ -64,6 +64,7 @@ class PickController extends Controller
                 [
                     'statusId' => $storePickRequest->pickItemStatusId,
                     'typeId' => $storePickRequest->pickItemTypeId,
+                    'pickId' => $pick->id,
                 ]
         );
 
@@ -79,17 +80,9 @@ class PickController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Pick $pick): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return response()->json($pick, Response::HTTP_OK);
     }
 
     /**
@@ -103,8 +96,15 @@ class PickController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Pick $pick): JsonResponse
     {
-        //
+        $pick->delete();
+
+        return response()->json(
+            [
+                'message' => 'Pick Deleted Successfully!'
+            ],
+            Response::HTTP_OK
+        );
     }
 }

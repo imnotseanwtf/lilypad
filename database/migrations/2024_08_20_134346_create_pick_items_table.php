@@ -26,7 +26,7 @@ return new class extends Migration
             $table->foreignId('orderTypeId')->constrained('ordertype');
             $table->foreignId('partId')->constrained('part');
             $table->foreignId('pickId')->constrained('pick');
-            $table->foreignId('poItemId')->constrained('poitem');
+            $table->foreignId('poItemId')->nullable()->constrained('poitem');
             $table->foreignId('soItemId')->nullable()->constrained('soitem');
             $table->foreignId('statusId')->nullable()->constrained('pickitemstatus');
             $table->foreignId('typeId')->constrained('pickitemtype');
