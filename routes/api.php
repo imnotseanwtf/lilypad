@@ -9,7 +9,6 @@ use App\Http\Controllers\V1\ProductController;
 use App\Http\Controllers\V1\QuickBookClassController;
 use App\Http\Controllers\V1\SalesOrderController;
 use App\Http\Controllers\V1\TaxRateController;
-use App\Http\Controllers\V1\UnitOfMeasureController;
 use App\Http\Controllers\V1\VendorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +27,6 @@ Route::apiResources([
     'qbclass' => QuickBookClassController::class,
     'taxrate' => TaxRateController::class,
     'currency' => CurrencyController::class,
-    'uom' => UnitOfMeasureController::class,
     'payment-terms' => PaymentTermsController::class,
 ]);
 
