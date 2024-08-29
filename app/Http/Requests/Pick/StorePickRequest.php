@@ -41,7 +41,7 @@ class StorePickRequest extends FormRequest
             'items.*.destTagId' => ['nullable', 'integer'],  // bigint
             'items.*.orderId' => ['required', 'integer'],
             'items.*.orderTypeId' => ['required', 'integer', 'exists:ordertype,id'],
-            'items.*.partId' => ['required', 'integer', 'exists:part,id'],
+            'items.*.partId' => ['required', 'integer', 'exists:part,id',],
             'items.*.poItemId' => ['nullable', 'integer', 'exists:poitem,id'],
             'items.*.qty' => ['nullable', 'numeric'],  // decimal(28,9)
             'items.*.shipId' => ['nullable', 'integer'],
