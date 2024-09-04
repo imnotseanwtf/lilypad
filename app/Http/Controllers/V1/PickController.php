@@ -42,10 +42,7 @@ class PickController extends Controller
 
                 $product = Product::where('partId', $part->id)->firstOrFail();
 
-                $trackingInfo = TrackingInfo::firstOrCreate(
-                    [
-                        'partTrackingId' => $inventoryLog->partTrackingId,
-                    ],
+                $trackingInfo = TrackingInfo::create(
                     $storePickRequest->only(
                         [
                             'info',
@@ -58,6 +55,7 @@ class PickController extends Controller
                     ) +
                         [
                             'tableId' => $tableReference->tableId,
+                            'partTrackingId' => $inventoryLog->partTrackingId,
                         ]
                 );
             }
