@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class TableReference extends Model
 {
     use HasFactory;
+
+    protected $table = 'tablereference';
 }

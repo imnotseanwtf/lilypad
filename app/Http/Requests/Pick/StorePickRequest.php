@@ -38,7 +38,14 @@ class StorePickRequest extends FormRequest
             'pickTypeId' => ['required', 'integer', 'exists:picktype,id'], // typeId
             'userId' => ['required', 'integer',], // 'exists:sysuser,id'
 
-            'items.*.destTagId' => ['nullable', 'integer'],  // bigint
+            'info' => ['nullable', 'string'],
+            'infoDate' => ['nullable', 'date'],
+            'infoDouble' => ['nullable', 'numeric'],
+            'infoInteger' => ['nullable', 'integer'],
+            'qty' => ['nullable', 'numeric'],
+            'recordId' => ['nullable', 'integer', 'exists:tablereference,id'],
+
+            'items.*.destTagId' => ['nullable', 'integer'],  // bigint  
             'items.*.orderId' => ['required', 'integer'],
             'items.*.orderTypeId' => ['required', 'integer', 'exists:ordertype,id'],
             'items.*.partId' => ['required', 'integer', 'exists:part,id',],
