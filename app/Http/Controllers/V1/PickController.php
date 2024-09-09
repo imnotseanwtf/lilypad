@@ -6,14 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pick\StorePickRequest;
 use App\Http\Requests\Pick\UpdatePickRequest;
 use App\Models\InventoryLog;
+use App\Models\Location;
 use App\Models\Part;
+use App\Models\PartToTracking;
+use App\Models\PartTrackingType;
 use App\Models\Pick;
 use App\Models\PickItem;
 use App\Models\Product;
+use App\Models\SerialNumber;
 use App\Models\TableReference;
 use App\Models\TrackingInfo;
+use App\Rules\PartTrackingTypeRule;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Validator;
 
 class PickController extends Controller
 {
@@ -30,74 +36,56 @@ class PickController extends Controller
      */
     public function store(StorePickRequest $storePickRequest): JsonResponse
     {
-        $items = $storePickRequest->input('items', []);
+        foreach ($storePickRequest->all() as $item) {
+            $part = Part::where('num', $item['partNum'])->firstOrFail();
 
-        foreach ($items as $item) {
-            $part = Part::find($item['partId']);
+            $partToTracking = PartToTracking::where('partId', $part->id)->firstOrFail();
 
-            $tableReference = TableReference::find($storePickRequest->recordId);
+            $partTrackingType = PartTrackingType::where('name', $item['partTrackingType'])->firstOrFail();
 
-            if ($part->trackingFlag == true) {
-                $inventoryLog = InventoryLog::where('partId', $part->id)->firstOrFail();
-
-                $product = Product::where('partId', $part->id)->firstOrFail();
-
-                $trackingInfo = TrackingInfo::create(
-                    $storePickRequest->only(
-                        [
-                            'info',
-                            'infoDate',
-                            'infoDouble',
-                            'infoInteger',
-                            'qty',
-                            'recordId',
-                        ]
-                    ) +
-                        [
-                            'tableId' => $tableReference->tableId,
-                            'partTrackingId' => $inventoryLog->partTrackingId,
-                        ]
+            if ($partToTracking->partTracking->typeId !== $partTrackingType->id)
+            {
+                return response()->json(
+                    [
+                        'message' => 'Part Tracking and Part Tracking Type is not the same'
+                    ]
                 );
             }
-        }
 
-        $pick = Pick::create(
-            $storePickRequest->only([
-                'dateCreated',
-                'dateFinished',
-                'dateLastModified',
-                'dateScheduled',
-                'dateStarted',
-                'locationGroupId',
-                'num',
-                'priority',
-                'userId',
-            ]) +
-                [
-                    'statusId' =>  $storePickRequest->pickStatusId,
-                    'typeId' => $storePickRequest->pickTypeId,
-                ]
-        );
+            $location = Location::where('name', $item['locationName'])->firstOrFail();
 
-        foreach ($storePickRequest->items as $item) {
-            $pickItem = PickItem::create(
-                array_merge(
-                    $item,
+            if ($item['partTrackingType'] === 'Serial Number') {
+                $serialNumber = SerialNumber::createUniqueSerialNumber($partToTracking->partTrackingId);
+
+                $trackingInfo = TrackingInfo::create(
                     [
-                        'statusId' => $item['pickItemStatusId'],
-                        'typeId' => $item['pickItemTypeId'],
-                        'pickId' => $pick->id,
+                        'partTrackingId' => $partToTracking->partTrackingId
                     ]
-                )
+                );
+            }
+            if ($item['partTrackingType'] === 'Expiration Date') {
+                $trackingInfo = TrackingInfo::create(
+                    [
+                        'partTrackingId' => $partToTracking->partTrackingId,
+                        'infoDate' => $item['trackingInfo'],
+                    ]
+                );
+            }
+
+            $pick = Pick::create(
+                [
+                    'num' => $item['pickNum'],
+                    'locationGroupId' => $location->locationGroupId,
+                ]
             );
         }
 
         return response()->json(
             [
                 'message' => 'Pick Created Successfully!',
-                'pickData' => $pick,
-                'pickItemData' => $pickItem,
-                'trackingInfo' => $trackingInfo
+                'serialNum' => $serialNumber ?? null,
+                'trackingInfo' => $trackingInfo ?? null,
+                'pick' => $pick
             ],
             Response::HTTP_CREATED
         );

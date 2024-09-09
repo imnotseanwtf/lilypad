@@ -84,7 +84,7 @@ class PartController extends Controller
             [
                 'message' => 'Product Created Successfully!',
                 'partData' => $part,
-                'partTrackingData' => $partToTracking,
+                'partTrackingData' => $partTracking,
                 'partToTrackingData' => $partToTracking,
             ],
             Response::HTTP_CREATED
