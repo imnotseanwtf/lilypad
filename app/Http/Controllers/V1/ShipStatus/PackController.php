@@ -34,6 +34,6 @@ class PackController extends Controller
             [
                 'message' => 'Packed'
             ]
-            );
+        );
     }
 }

@@ -18,6 +18,7 @@ use App\Models\SerialNumber;
 use App\Models\TableReference;
 use App\Models\TrackingInfo;
 use App\Rules\PartTrackingTypeRule;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
@@ -42,9 +43,15 @@ class PickController extends Controller
 
             $partTracking = PartTracking::where('name', $item['partTrackingType'])->firstOrFail();
 
-            $partToTracking = PartToTracking::where('partId', $part->id)
-                ->where('partTrackingId', $partTracking->id)
-                ->firstOrFail();
+            try {
+                $partToTracking = PartToTracking::where('partId', $part->id)
+                    ->where('partTrackingId', $partTracking->id)
+                    ->firstOrFail();
+            } catch (ModelNotFoundException $e) {
+                return response()->json([
+                    'message' => 'Part tracking not found for the given part and tracking ID.',
+                ], Response::HTTP_NOT_FOUND);
+            }
 
             $location = Location::where('name', $item['locationName'])->firstOrFail();
 
@@ -57,7 +64,7 @@ class PickController extends Controller
                     ]
                 );
             }
-            
+
             if ($item['partTrackingType'] === 'Expiration Date') {
                 $trackingInfo = TrackingInfo::create(
                     [
