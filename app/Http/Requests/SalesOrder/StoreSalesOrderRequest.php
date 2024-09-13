@@ -74,7 +74,7 @@ class StoreSalesOrderRequest extends FormRequest
 
             // QuickBooks and Location Information
             'quickBookClassName' => ['required', 'string', 'exists:qbclass,name'], // QuickBooksClassName
-            'locationGroupName' => ['required', 'string', 'max:100'], // LocationGroupName
+            'locationGroupName' => ['required', 'string', 'max:100', 'exists:locationgroup,name'], // LocationGroupName
 
             // Contact Information
             'phone' => ['required', 'string', 'max:256'], // Phone
@@ -100,7 +100,7 @@ class StoreSalesOrderRequest extends FormRequest
             'items.*.productNumber' => ['required', 'string', 'max:70', 'exists:product,num'], // productNum
             'items.*.productDescription' => ['required', 'string', 'max:256'], // description
             'items.*.productQuantity' => ['required', 'integer'], // qtyOrdered
-            'items.*.uom' => ['required', 'integer'],
+            'items.*.uom' => ['required', 'string', 'exists:uom,name'],
             'items.*.productPrice' => ['required', 'numeric'], // unitPrice
             'items.*.taxable' => ['required', 'boolean'],
             'items.*.taxCode' => ['required', 'integer'],

@@ -8,9 +8,13 @@ use App\Http\Controllers\V1\LocationController;
 use App\Http\Controllers\V1\PartController;
 use App\Http\Controllers\V1\PaymentTermsController;
 use App\Http\Controllers\V1\PickController;
+use App\Http\Controllers\V1\PickStatus\FinishController;
+use App\Http\Controllers\V1\PickStatus\StartController;
 use App\Http\Controllers\V1\ProductController;
 use App\Http\Controllers\V1\QuickBookClassController;
 use App\Http\Controllers\V1\SalesOrderController;
+use App\Http\Controllers\V1\ShipStatus\PackController;
+use App\Http\Controllers\V1\ShipStatus\ShipController;
 use App\Http\Controllers\V1\TaxRateController;
 use App\Http\Controllers\V1\VendorController;
 use Illuminate\Http\Request;
@@ -35,5 +39,11 @@ Route::apiResources([
     'currency' => CurrencyController::class,
     'payment-terms' => PaymentTermsController::class,
 ]);
+
+Route::post('pick-finish', FinishController::class);
+Route::post('pick-start', StartController::class);
+
+Route::post('pack', PackController::class);
+Route::post('ship', ShipController::class);
 
 Route::prefix('v1')->middleware('auth:api')->group(function () {});

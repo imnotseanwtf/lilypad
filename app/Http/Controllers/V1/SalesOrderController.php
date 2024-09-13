@@ -10,6 +10,8 @@ use App\Models\CarrierService;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Customer;
+use App\Models\LocationGroup;
+use App\Models\Pick;
 use App\Models\Product;
 use App\Models\qbClass;
 use App\Models\SalesOrder;
@@ -17,6 +19,7 @@ use App\Models\SalesOrderItems;
 use App\Models\ShipTerms;
 use App\Models\State;
 use App\Models\TaxRate;
+use App\Models\UnitOfMeasure;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -50,6 +53,8 @@ class SalesOrderController extends Controller
 
         $newNum = (string)((optional(SalesOrder::latest('id')->first())->num ?? 1000) + 1);
 
+        $locationGroup = LocationGroup::where('name', $storeSalesOrderRequest->locationGroupName)->firstOrFail();
+
         $salesOrder = SalesOrder::create(
             $storeSalesOrderRequest->only([
                 'customerContact',
@@ -69,7 +74,6 @@ class SalesOrderController extends Controller
                 'paymentTerms',
                 'fob',
                 'note',
-                'locationGroupName',
                 'phone',
                 'email',
                 'url',
@@ -77,6 +81,7 @@ class SalesOrderController extends Controller
                 'customField',
                 'currencyRate',
             ]) + [
+                'locationGroupId' => $locationGroup->id,
                 'activeFlag' => $storeSalesOrderRequest->flag,
                 'shipTermsId' => $shipterms->id,
                 'billToCountryId' => $billToCountry->id,
@@ -100,11 +105,12 @@ class SalesOrderController extends Controller
         foreach ($storeSalesOrderRequest->validated()['items'] as $item) {
             $product = Product::where('num', $item['productNumber'])->firstOrFail();
             $qbClass = qbClass::where('name', $item['itemQuickBooksClassName'])->firstOrFail();
+            $uom = UnitOfMeasure::where('name', $item['uom'])->firstOrFail();
 
             $transformedItem = [
                 'note' => $item['note'],
                 'typeId' => $item['soItemTypeId'],
-                'oumId' => $item['uom'],
+                'uomId' => $uom->id,
                 'productId' => $product->id,
                 'productNum' => $item['productNumber'],
                 'showItemFlag' => $item['showItem'],
@@ -125,11 +131,20 @@ class SalesOrderController extends Controller
             $salesOrderItems[] = SalesOrderItems::create($transformedItem);
         }
 
+
+        $pick = Pick::create(
+            [
+                'num' =>  $salesOrder->num,
+                'locationGroupId' => $locationGroup->id,
+            ]
+        );
+
         return response()->json(
             [
                 'message' => 'Sales Order created successfully',
                 'salesOrderData' => $salesOrder,
                 'salesOrderItemData' => $salesOrderItems,
+                'pick' => $pick,
             ],
             Response::HTTP_CREATED
         );

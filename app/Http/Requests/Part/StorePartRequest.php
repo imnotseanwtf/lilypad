@@ -45,7 +45,7 @@ class StorePartRequest extends FormRequest
             'revision' => ['required', 'string', 'max:15'],
             'poItemType' => ['required', 'string', 'exists:poitemtype,name'], // defualtPoItemTypeId
             'defaultOutsourcedReturnItem' => ['required', 'integer'], // defaultOutsourcedReturnItemId
-            'primaryTracking' => ['required', 'string'],
+            'primaryTracking' => ['required', 'string', 'exists:parttracking,name'],
             'tracks' => ['required', 'string', 'exists:parttrackingtype,name'],
             'nextValue' => ['required', 'string'],
             'cf' => ['required', 'string'], // customFields

@@ -27,7 +27,7 @@ class StorePickRequest extends FormRequest
     public function rules(): array
     {
         return [
-            '*.pickNum' => ['required', 'numeric'],
+            '*.pickNum' => ['required', 'numeric', 'exists:so,num'],
             '*.locationName' => ['required', 'string', 'max:255', 'exists:location,name'],
             '*.partNum' => ['required', 'string', 'max:255', 'exists:part,num'],
             '*.partTrackingType' => ['required', 'string', 'exists:parttracking,name'],

@@ -9,6 +9,7 @@ use App\Models\InventoryLog;
 use App\Models\Location;
 use App\Models\Part;
 use App\Models\PartToTracking;
+use App\Models\PartTracking;
 use App\Models\PartTrackingType;
 use App\Models\Pick;
 use App\Models\PickItem;
@@ -28,7 +29,7 @@ class PickController extends Controller
      */
     public function index()
     {
-        //
+        //  
     }
 
     /**
@@ -39,17 +40,11 @@ class PickController extends Controller
         foreach ($storePickRequest->all() as $item) {
             $part = Part::where('num', $item['partNum'])->firstOrFail();
 
-            $partToTracking = PartToTracking::where('partId', $part->id)->firstOrFail();
+            $partTracking = PartTracking::where('name', $item['partTrackingType'])->firstOrFail();
 
-            $partTrackingType = PartTrackingType::where('name', $item['partTrackingType'])->firstOrFail();
-
-            if ($partToTracking->partTracking->typeId !== $partTrackingType->id) {
-                return response()->json(
-                    [
-                        'message' => 'Part Tracking and Part Tracking Type is not the same'
-                    ]
-                );
-            }
+            $partToTracking = PartToTracking::where('partId', $part->id)
+                ->where('partTrackingId', $partTracking->id)
+                ->firstOrFail();
 
             $location = Location::where('name', $item['locationName'])->firstOrFail();
 
@@ -62,6 +57,7 @@ class PickController extends Controller
                     ]
                 );
             }
+            
             if ($item['partTrackingType'] === 'Expiration Date') {
                 $trackingInfo = TrackingInfo::create(
                     [

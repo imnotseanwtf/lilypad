@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class SalesOrderItems extends Model
 {
@@ -48,9 +49,8 @@ class SalesOrderItems extends Model
 
     public $timestamps = false;
 
-    public function scopeForSalesOrderExcluding($query, $soId, array $excludeIds = [])
+    public function salesOrder(): HasOne
     {
-        return $query->where('soId', $soId)
-                     ->whereNotIn('id', $excludeIds);
+        return $this->hasOne(SalesOrder::class, 'id', 'soId');
     }
 }

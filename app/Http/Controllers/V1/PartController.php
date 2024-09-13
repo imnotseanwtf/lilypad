@@ -35,8 +35,6 @@ class PartController extends Controller
         $partType = PartType::where('name', $storePartRequest->partType)->firstOrFail();
         $poItemType = PurchaseOrderItemType::where('name', $storePartRequest->poItemType)->firstOrFail();
 
-        $partTrackingType = PartTrackingType::where('name', $storePartRequest->tracks)->firstOrFail();
-
         $part = Part::create(
             $storePartRequest->only(
                 [
@@ -62,14 +60,7 @@ class PartController extends Controller
                 ]
         );
 
-        $partTracking = PartTracking::create(
-            $storePartRequest->only('description') +
-                [
-                    'name' => $storePartRequest->primaryTracking,
-                    'typeId' => $partTrackingType->id,
-                    'abbr' => $storePartRequest->uom,
-                ]
-        );
+        $partTracking = PartTracking::where('name', $storePartRequest->primaryTracking)->firstOrFail();
 
         $partToTracking = PartToTracking::create(
             $storePartRequest->only('nextValue') +
