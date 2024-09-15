@@ -20,6 +20,7 @@ use App\Models\ShipTerms;
 use App\Models\State;
 use App\Models\TaxRate;
 use App\Models\UnitOfMeasure;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -136,6 +137,11 @@ class SalesOrderController extends Controller
             [
                 'num' =>  $salesOrder->num,
                 'locationGroupId' => $locationGroup->id,
+                'dateCreated' => Carbon::now(),
+                'dateFinished' => Carbon::now(),
+                'dateLastModified' => Carbon::now(),
+                'dateScheduled' => Carbon::now(),
+                'dateStarted' => Carbon::now(),
             ]
         );
 

@@ -18,6 +18,7 @@ use App\Models\SerialNumber;
 use App\Models\TableReference;
 use App\Models\TrackingInfo;
 use App\Rules\PartTrackingTypeRule;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,6 +88,11 @@ class PickController extends Controller
                 [
                     'num' => $item['pickNum'],
                     'locationGroupId' => $location->locationGroupId,
+                    'dateCreated' => Carbon::now(),
+                    'dateFinished' => Carbon::now(),
+                    'dateLastModified' => Carbon::now(),
+                    'dateScheduled' => Carbon::now(),
+                    'dateStarted' => Carbon::now(),
                 ]
             );
         }
