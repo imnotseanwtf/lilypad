@@ -11,6 +11,8 @@ use App\Models\PartTracking;
 use App\Models\PartTrackingType;
 use App\Models\PartType;
 use App\Models\PurchaseOrderItemType;
+use App\Models\SerialNumber;
+use App\Models\TrackingInfo;
 use App\Models\UnitOfMeasure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -70,6 +72,9 @@ class PartController extends Controller
                 ]
         );
 
+        if ($storePartRequest->primaryTracking === 'Serial Number') {
+            $serialNumber = SerialNumber::createUniqueSerialNumber($partToTracking->partTrackingId);
+        }
 
         return response()->json(
             [
@@ -77,6 +82,7 @@ class PartController extends Controller
                 'partData' => $part,
                 'partTrackingData' => $partTracking,
                 'partToTrackingData' => $partToTracking,
+                'serialNum' => $serialNumber ?? null,
             ],
             Response::HTTP_CREATED
         );
