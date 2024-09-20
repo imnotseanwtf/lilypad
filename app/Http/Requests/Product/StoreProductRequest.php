@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
+use App\Rules\ProductValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductRequest extends FormRequest
@@ -22,7 +23,7 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'partNumber' => ['nullable', 'string', 'exists:part,num'], // partId
+            'partNumber' => ['nullable', 'string', new ProductValidationRule ], // partId
             'productNumber' => ['nullable', 'string', 'max:70', 'unique:product,num'], // num
             'productDescription' => ['nullable', 'string', 'max:252'], // description
             'productDetails' => ['required', 'string'], // details

@@ -20,13 +20,13 @@ return new class extends Migration
             $table->decimal('qty', 28, 9)->nullable();
             $table->decimal('qtyCommitted', 28, 9)->nullable();
             $table->boolean('serializedFlag');
-            $table->string('trackingEncoding', 30);
-            $table->boolean('usedFlag');
+            $table->string('trackingEncoding', 30)->nullable();
+            $table->boolean('usedFlag')->nullable();
             
             $table->unsignedInteger('woItemId')->nullable();
-            $table->unsignedInteger('partId')->nullable();
-            $table->unsignedInteger('typeId');
-            $table->unsignedInteger('locationId');
+            $table->foreignId('partId')->nullable()->constrained('part');
+            $table->foreignId('typeId')->default(30)->constrained('tagtype');
+            $table->foreignId('locationId')->nullable()->constrained('location');
 
             $table->index(['locationId', 'woItemId', 'partId', 'typeId', 'dateLastCycleCount', 'num'], 'Performance');
         });

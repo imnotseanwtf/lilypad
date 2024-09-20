@@ -25,7 +25,7 @@ class SerialNumber extends Model
      * @return string
      */
 
-    public static function createUniqueSerialNumber($partTrackingId): string
+    public static function createUniqueSerialNumber($partTrackingId, $serialId): string
     {
         $prefixes = Config::get('serial_numbers.prefixes');
         $serialLength = Config::get('serial_numbers.serial_length');
@@ -38,7 +38,8 @@ class SerialNumber extends Model
 
         self::create([
             'serialNum' => $serialNumber,
-            'partTrackingId' => $partTrackingId
+            'partTrackingId' => $partTrackingId,
+            'serialId' => $serialId
         ]);
 
         return $serialNumber;

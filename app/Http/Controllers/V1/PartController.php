@@ -11,7 +11,9 @@ use App\Models\PartTracking;
 use App\Models\PartTrackingType;
 use App\Models\PartType;
 use App\Models\PurchaseOrderItemType;
+use App\Models\Serial;
 use App\Models\SerialNumber;
+use App\Models\Tag;
 use App\Models\TrackingInfo;
 use App\Models\UnitOfMeasure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -73,16 +75,36 @@ class PartController extends Controller
         );
 
         if ($storePartRequest->primaryTracking === 'Serial Number') {
-            $serialNumber = SerialNumber::createUniqueSerialNumber($partToTracking->partTrackingId);
+            $serialFlag = true;
+        }
+
+         $tag = Tag::create(
+            [
+                'partId' => $part->id,
+                'serializedFlag' => $serialFlag ?? false,
+            ]
+        );
+
+        $serial = Serial::create(
+            [
+                'tagId' => $tag->id,
+            ]
+        );
+
+
+        if ($storePartRequest->primaryTracking === 'Serial Number') {
+            $serialNumber = SerialNumber::createUniqueSerialNumber($partToTracking->partTrackingId, $serial->id);
         }
 
         return response()->json(
             [
-                'message' => 'Product Created Successfully!',
+                'message' => 'Part Created Successfully!',
                 'partData' => $part,
                 'partTrackingData' => $partTracking,
                 'partToTrackingData' => $partToTracking,
                 'serialNum' => $serialNumber ?? null,
+                'tag' => $tag ?? null,
+                'serial' => $tag ?? null,
             ],
             Response::HTTP_CREATED
         );
