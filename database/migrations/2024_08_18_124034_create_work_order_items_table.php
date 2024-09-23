@@ -13,7 +13,19 @@ return new class extends Migration
     {
         Schema::create('woitem', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->decimal('cost', 28, 9)->nullable();
+            $table->string('description', 256)->nullable();
+            $table->integer('moItemId');
+            $table->integer('partId')->nullable();
+            $table->decimal('qtyScrapped', 28, 9)->nullable();
+            $table->decimal('qtyTarget', 28, 9)->nullable();
+            $table->decimal('qtyUsed', 28, 9)->nullable();
+            $table->integer('sortId');
+            $table->integer('typeId')->nullable();
+            $table->integer('uomId')->nullable();
+            $table->integer('woId');
+            
+            $table->index(['typeId', 'partId', 'moItemId', 'uomId', 'woId'], 'Performance');
         });
     }
 

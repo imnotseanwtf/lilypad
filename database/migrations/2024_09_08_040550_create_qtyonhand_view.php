@@ -12,22 +12,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // DB::statement('
-        //     CREATE VIEW lilypad.qtyonhand AS
-        //     SELECT 
-        //         lilypad.tag.partId AS PARTID,
-        //         lilypad.location.locationGroupId AS LOCATIONGROUPID,
-        //         COALESCE(SUM(lilypad.tag.qty), 0) AS QTY
-        //     FROM
-        //         lilypad.tag
-        //     JOIN lilypad.location 
-        //         ON lilypad.location.id = lilypad.tag.locationId
-        //     WHERE
-        //         lilypad.tag.typeId IN (30, 40)
-        //     GROUP BY 
-        //         lilypad.location.locationGroupId, 
-        //         lilypad.tag.partId
-        // ');
+        DB::statement('
+            CREATE VIEW lilypad.qtyonhand AS
+            SELECT 
+                lilypad.tag.partId AS PARTID,
+                lilypad.location.locationGroupId AS LOCATIONGROUPID,
+                COALESCE(SUM(lilypad.tag.qty), 0) AS QTY
+            FROM
+                lilypad.tag
+            JOIN lilypad.location 
+                ON lilypad.location.id = lilypad.tag.locationId
+            WHERE
+                lilypad.tag.typeId IN (30, 40)
+            GROUP BY 
+                lilypad.location.locationGroupId, 
+                lilypad.tag.partId
+        ');
     }
 
     /**

@@ -3,7 +3,7 @@
 use App\Http\Controllers\V1\CountryAndStateController;
 use App\Http\Controllers\V1\CurrencyController;
 use App\Http\Controllers\V1\CustomerController;
-use App\Http\Controllers\V1\InventoryLogController;
+use App\Http\Controllers\V1\InventoryController;
 use App\Http\Controllers\V1\LocationController;
 use App\Http\Controllers\V1\PartController;
 use App\Http\Controllers\V1\PaymentTermsController;
@@ -30,7 +30,6 @@ Route::apiResources([
     'product' => ProductController::class,
     'customer' => CustomerController::class,
     'location' => LocationController::class,
-    'inventory' => InventoryLogController::class,
     'part' => PartController::class,
     'vendor' => VendorController::class,
     'country-state' => CountryAndStateController::class,
@@ -39,6 +38,8 @@ Route::apiResources([
     'currency' => CurrencyController::class,
     'payment-terms' => PaymentTermsController::class,
 ]);
+
+Route::post('inventory', InventoryController::class);
 
 Route::post('pick-finish', FinishController::class);
 Route::post('pick-start', StartController::class);
