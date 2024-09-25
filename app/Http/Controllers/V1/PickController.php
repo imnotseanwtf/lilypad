@@ -55,7 +55,7 @@ class PickController extends Controller
             if ($item['partTrackingType'] === 'Serial Number') {
                 $serialNumbers = $item['trackingInfo'];
                 $serialCount = count($serialNumbers);
-            
+
                 $tag = Tag::where('partId', $part->id)
                     ->first();
             

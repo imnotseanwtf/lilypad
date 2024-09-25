@@ -34,7 +34,8 @@ class InventoryController extends Controller
 
         $partToTracking = PartToTracking::where('partId', $part->id)->firstOrFail();
 
-        $tag = Tag::firstOrCreate(['partId' => $part->id],
+        $tag = Tag::updateOrCreate(
+            ['partId' => $part->id],
             [
                 'qty' => $storeInventoryRequest->qty,
                 'qtyCommitted' => $storeInventoryRequest->qty,
@@ -42,6 +43,7 @@ class InventoryController extends Controller
                 'locationId' => $location->id,
             ]
         );
+        
 
         if ($partToTracking->partTracking->name === 'Serial Number') {
             $serial = Serial::firstOrCreate(
