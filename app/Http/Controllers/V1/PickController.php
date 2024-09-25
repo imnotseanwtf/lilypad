@@ -63,7 +63,7 @@ class PickController extends Controller
                     return response()->json(['message' => 'Tag not found for this part'], Response::HTTP_NOT_FOUND);
                 }
             
-                if ($serialCount !== $tag->qty) {
+                if ($serialCount !== (int) $tag->qty) {
                     return response()->json(['message' => 'Serial number count does not match inventory quantity'], Response::HTTP_BAD_REQUEST);
                 }
             
