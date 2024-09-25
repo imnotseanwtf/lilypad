@@ -32,7 +32,6 @@ class ProductController extends Controller
         $soItem = SalesOrderItemType::where('name', $storeProductRequest->productSoItemType)->firstOrFail();
         $uom = UnitOfMeasure::where('name', $storeProductRequest->uom)->firstOrFail();
 
-
         $product = Product::create(
             $storeProductRequest->only(
                 [

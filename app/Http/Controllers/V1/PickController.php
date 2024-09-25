@@ -10,7 +10,9 @@ use App\Models\Part;
 use App\Models\PartToTracking;
 use App\Models\PartTracking;
 use App\Models\Pick;
+use App\Models\Serial;
 use App\Models\SerialNumber;
+use App\Models\Tag;
 use App\Models\TrackingInfo;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -51,40 +53,24 @@ class PickController extends Controller
             }
 
             if ($item['partTrackingType'] === 'Serial Number') {
-                try {
-                 $serialNumber = SerialNumber::where('serialNum', $item['trackingInfo'])->where('partTrackingId', $partToTracking->partTrackingId)->firstOrFail();
-                } catch (ModelNotFoundException $e) {
-                    return response()->json(
-                        [
-                            'message' => 'Serial Number doesnt Exists',
-                        ],
-                        Response::HTTP_NOT_FOUND
-                    );
+                foreach ($item['trackingInfo'] as $serialNumber) {
+                    try {
+                        $serial = SerialNumber::where('serialNum', $serialNumber)
+                            ->where('partTrackingId', $partToTracking->partTrackingId)
+                            ->firstOrFail();
+                        $tag = Tag::findOrFail($serial->serialId);
+                        if ($part->id !== $tag->partId) {
+                            return response()->json(['message' => 'Part Serial does not exist'], Response::HTTP_BAD_REQUEST);
+                        }
+                    } catch (ModelNotFoundException $e) {
+                        return response()->json(['message' => 'Serial Number doesn\'t exist'], Response::HTTP_NOT_FOUND);
+                    }
                 }
-
-                $trackingInfo = TrackingInfo::create(
-                    [
-                        'partTrackingId' => $partTracking->id
-                    ]
-                );
-            }
-
-            if ($item['partTrackingType'] === 'Expiration Date') {
-                $trackingInfo = TrackingInfo::create(
-                    [
-                        'partTrackingId' => $partTracking->id,
-                        'infoDate' => $item['trackingInfo'],
-                    ]
-                );
-            }
-
-            if ($item['partTrackingType'] === 'Revision Level' || $storePickRequest->partTrackingType === 'Lot Number') {
-                $trackingInfo = TrackingInfo::create(
-                    [
-                        'partTrackingId' => $partToTracking->partTrackingId,
-                        'info' => $item['trackingInfo'],
-                    ]
-                );
+                $trackingInfo = TrackingInfo::create(['partTrackingId' => $partTracking->id]);
+            } elseif ($item['partTrackingType'] === 'Expiration Date') {
+                $trackingInfo = TrackingInfo::create(['partTrackingId' => $partTracking->id, 'infoDate' => $item['trackingInfo']]);
+            } elseif (in_array($item['partTrackingType'], ['Revision Level', 'Lot Number'])) {
+                $trackingInfo = TrackingInfo::create(['partTrackingId' => $partToTracking->partTrackingId, 'info' => $item['trackingInfo']]);
             }
 
             $location = Location::where('name', $item['locationName'])->firstOrFail();
@@ -108,7 +94,7 @@ class PickController extends Controller
                 'message' => 'Pick Created Successfully!',
                 'serialNum' => $serialNumber ?? null,
                 'trackingInfo' => $trackingInfo ?? null,
-                'pick' => $pick
+                'pick' => $pick  ?? null,
             ],
             Response::HTTP_CREATED
         );

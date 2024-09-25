@@ -25,24 +25,28 @@ class SerialNumber extends Model
      * @return string
      */
 
-    public static function createUniqueSerialNumber($partTrackingId, $serialId): string
+    public static function createUniqueSerialNumbers($partTrackingId, $serialId, $qty): array
     {
         $prefixes = Config::get('serial_numbers.prefixes');
         $serialLength = Config::get('serial_numbers.serial_length');
 
-        do {
-            $prefix = $prefixes[array_rand($prefixes)];
-            $uniquePart = self::generateUniquePart($serialLength);
-            $serialNumber = "{$prefix}-{$uniquePart}";
-        } while (self::where('serialNum', $serialNumber)->exists());
+        $serialNumbers = array_map(function () use ($prefixes, $serialLength, $partTrackingId, $serialId) {
+            do {
+                $prefix = $prefixes[array_rand($prefixes)];
+                $uniquePart = self::generateUniquePart($serialLength);
+                $serialNumber = "{$prefix}-{$uniquePart}";
+            } while (self::where('serialNum', $serialNumber)->exists());
 
-        self::create([
-            'serialNum' => $serialNumber,
-            'partTrackingId' => $partTrackingId,
-            'serialId' => $serialId
-        ]);
+            self::create([
+                'serialNum' => $serialNumber,
+                'partTrackingId' => $partTrackingId,
+                'serialId' => $serialId
+            ]);
 
-        return $serialNumber;
+            return $serialNumber;
+        }, range(1, $qty));
+
+        return $serialNumbers;
     }
 
     /**

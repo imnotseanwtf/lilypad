@@ -9,6 +9,7 @@ use App\Models\Part;
 use App\Models\PartCost;
 use App\Models\PartToTracking;
 use App\Models\Serial;
+use App\Models\SerialNumber;
 use App\Models\Tag;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class InventoryController extends Controller
 
         $partToTracking = PartToTracking::where('partId', $part->id)->firstOrFail();
 
-        $tag = Tag::firstOrCreate(
+        $tag = Tag::firstOrCreate(['partId' => $part->id],
             [
                 'qty' => $storeInventoryRequest->qty,
                 'qtyCommitted' => $storeInventoryRequest->qty,
@@ -42,11 +43,14 @@ class InventoryController extends Controller
             ]
         );
 
-        $serial = Serial::firstOrCreate(
-            [
-                'tagId' => $tag->id,
-            ]
-        );
+        if ($partToTracking->partTracking->name === 'Serial Number') {
+            $serial = Serial::firstOrCreate(
+                [
+                    'tagId' => $tag->id,
+                ]
+            );
+            $serialNumber = SerialNumber::createUniqueSerialNumbers($partToTracking->partTrackingId, $serial->id, $storeInventoryRequest->qty);
+        }
 
         $partCost = PartCost::create(
             [
@@ -64,6 +68,7 @@ class InventoryController extends Controller
                 'tag' => $tag ?? null,
                 'serial' => $serial ?? null,
                 'partCost' => $partCost ?? null,
+                'serialNum' => $serialNumber ?? null,
             ],
             Response::HTTP_CREATED,
         );

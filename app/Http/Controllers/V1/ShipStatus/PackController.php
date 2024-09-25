@@ -13,17 +13,8 @@ class PackController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Ship $ship): JsonResponse
     {
-        $packRequest = Validator::make(
-            $request->all(),
-            [
-                'shipId' => ['required', 'numeric', 'exists:ship,id']
-            ]
-        );
-
-        $ship = Ship::findOrFail($packRequest->validated()['shipId']);
-
         $ship->update(
             [
                 'statusId' => 20

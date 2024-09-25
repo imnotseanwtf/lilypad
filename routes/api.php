@@ -44,7 +44,7 @@ Route::post('inventory', InventoryController::class);
 Route::post('pick-finish', FinishController::class);
 Route::post('pick-start', StartController::class);
 
-Route::post('pack', PackController::class);
-Route::post('ship', ShipController::class);
+Route::get('pack/{ship}', PackController::class);
+Route::get('ship/{ship}', ShipController::class);
 
 Route::prefix('v1')->middleware('auth:api')->group(function () {});

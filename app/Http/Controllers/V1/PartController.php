@@ -91,20 +91,14 @@ class PartController extends Controller
             ]
         );
 
-
-        if ($storePartRequest->primaryTracking === 'Serial Number') {
-            $serialNumber = SerialNumber::createUniqueSerialNumber($partToTracking->partTrackingId, $serial->id);
-        }
-
         return response()->json(
             [
                 'message' => 'Part Created Successfully!',
                 'partData' => $part,
                 'partTrackingData' => $partTracking,
                 'partToTrackingData' => $partToTracking,
-                'serialNum' => $serialNumber ?? null,
                 'tag' => $tag ?? null,
-                'serial' => $tag ?? null,
+                'serial' => $serial ?? null,
             ],
             Response::HTTP_CREATED
         );
