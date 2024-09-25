@@ -53,12 +53,26 @@ class PickController extends Controller
             }
 
             if ($item['partTrackingType'] === 'Serial Number') {
-                foreach ($item['trackingInfo'] as $serialNumber) {
+                $serialNumbers = $item['trackingInfo'];
+                $serialCount = count($serialNumbers);
+            
+                $tag = Tag::where('partId', $part->id)
+                    ->first();
+            
+                if (!$tag) {
+                    return response()->json(['message' => 'Tag not found for this part'], Response::HTTP_NOT_FOUND);
+                }
+            
+                if ($serialCount !== $tag->qty) {
+                    return response()->json(['message' => 'Serial number count does not match inventory quantity'], Response::HTTP_BAD_REQUEST);
+                }
+            
+                foreach ($serialNumbers as $serialNumber) {
                     try {
                         $serial = SerialNumber::where('serialNum', $serialNumber)
                             ->where('partTrackingId', $partToTracking->partTrackingId)
                             ->firstOrFail();
-                        $tag = Tag::findOrFail($serial->serialId);
+                        
                         if ($part->id !== $tag->partId) {
                             return response()->json(['message' => 'Part Serial does not exist'], Response::HTTP_BAD_REQUEST);
                         }
