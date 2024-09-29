@@ -24,6 +24,7 @@ return new class extends Migration
             $table->boolean('pickable');
             $table->boolean('receivable');
             $table->integer('sortOrder')->nullable();
+            $table->string('customFields')->nullable();
 
             $table->foreignId('locationGroupId')->constrained('locationgroup');
             $table->foreignId('typeId')->constrained('locationtype');
@@ -37,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('locations');
+        Schema::dropIfExists('location');
     }
 };

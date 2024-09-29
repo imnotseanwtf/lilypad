@@ -43,7 +43,6 @@ class InventoryController extends Controller
                 'locationId' => $location->id,
             ]
         );
-        
 
         if ($partToTracking->partTracking->name === 'Serial Number') {
             $serial = Serial::firstOrCreate(

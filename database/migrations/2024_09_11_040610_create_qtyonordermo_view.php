@@ -12,36 +12,37 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyonordermo`;');
+
         DB::statement('
     CREATE 
         ALGORITHM = UNDEFINED 
         DEFINER = `root`@`localhost` 
         SQL SECURITY DEFINER
-    VIEW `lilypad`.`qtyonordermo` AS
+    VIEW `' . env('DB_DATABASE') . '`.`qtyonordermo` AS
         SELECT 
-            `lilypad`.`part`.`id` AS `PARTID`,
-            `lilypad`.`wo`.`locationGroupId` AS `LOCATIONGROUPID`,
+            `' . env('DB_DATABASE') . '`.`part`.`id` AS `PARTID`,
+            `' . env('DB_DATABASE') . '`.`wo`.`locationGroupId` AS `LOCATIONGROUPID`,
             COALESCE(SUM((CASE
                         WHEN
-                            ((`lilypad`.`woitem`.`uomId` <> `lilypad`.`part`.`uomId`)
-                                AND (`lilypad`.`uomconversion`.`id` > 0))
+                            ((`' . env('DB_DATABASE') . '`.`woitem`.`uomId` <> `' . env('DB_DATABASE') . '`.`part`.`uomId`)
+                                AND (`' . env('DB_DATABASE') . '`.`uomconversion`.`id` > 0))
                         THEN
-                            ((`lilypad`.`woitem`.`qtyTarget` * `lilypad`.`uomconversion`.`multiply`) / `lilypad`.`uomconversion`.`factor`)
-                        ELSE `lilypad`.`woitem`.`qtyTarget`
+                            ((`' . env('DB_DATABASE') . '`.`woitem`.`qtyTarget` * `' . env('DB_DATABASE') . '`.`uomconversion`.`multiply`) / `' . env('DB_DATABASE') . '`.`uomconversion`.`factor`)
+                        ELSE `' . env('DB_DATABASE') . '`.`woitem`.`qtyTarget`
                     END)),
                     0) AS `QTY`
         FROM
-            (((`lilypad`.`part`
-            JOIN `lilypad`.`woitem` ON ((`lilypad`.`part`.`id` = `lilypad`.`woitem`.`partId`)))
-            JOIN `lilypad`.`wo` ON ((`lilypad`.`wo`.`id` = `lilypad`.`woitem`.`woId`)))
-            LEFT JOIN `lilypad`.`uomconversion` ON (((`lilypad`.`uomconversion`.`toUomId` = `lilypad`.`part`.`uomId`)
-                AND (`lilypad`.`uomconversion`.`fromUomId` = `lilypad`.`woitem`.`uomId`))))
+            (((`' . env('DB_DATABASE') . '`.`part`
+            JOIN `' . env('DB_DATABASE') . '`.`woitem` ON ((`' . env('DB_DATABASE') . '`.`part`.`id` = `' . env('DB_DATABASE') . '`.`woitem`.`partId`)))
+            JOIN `' . env('DB_DATABASE') . '`.`wo` ON ((`' . env('DB_DATABASE') . '`.`wo`.`id` = `' . env('DB_DATABASE') . '`.`woitem`.`woId`)))
+            LEFT JOIN `' . env('DB_DATABASE') . '`.`uomconversion` ON (((`' . env('DB_DATABASE') . '`.`uomconversion`.`toUomId` = `' . env('DB_DATABASE') . '`.`part`.`uomId`)
+                AND (`' . env('DB_DATABASE') . '`.`uomconversion`.`fromUomId` = `' . env('DB_DATABASE') . '`.`woitem`.`uomId`))))
         WHERE
-            ((`lilypad`.`wo`.`statusId` < 40)
-                AND (`lilypad`.`woitem`.`typeId` IN (10 , 31)))
-        GROUP BY `lilypad`.`part`.`id`, `lilypad`.`wo`.`locationGroupId`;
+            ((`' . env('DB_DATABASE') . '`.`wo`.`statusId` < 40)
+                AND (`' . env('DB_DATABASE') . '`.`woitem`.`typeId` IN (10 , 31)))
+        GROUP BY `' . env('DB_DATABASE') . '`.`part`.`id`, `' . env('DB_DATABASE') . '`.`wo`.`locationGroupId`;
 ');
-
     }
 
     /**
@@ -49,6 +50,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtyonordermo_view');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyonordermo`;');
     }
 };

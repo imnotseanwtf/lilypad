@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,10 +12,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('womo_view', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`womoview`;');
+
+        DB::statement('
+    CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+    VIEW `' . env('DB_DATABASE') . '`.`womoview` AS
+    SELECT 
+        `' . env('DB_DATABASE') . '`.`wo`.`id` AS `WOID`
+    FROM
+        `' . env('DB_DATABASE') . '`.`wo`
+');
+
     }
 
     /**
@@ -22,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('womo_view');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`womoview`;');
     }
 };

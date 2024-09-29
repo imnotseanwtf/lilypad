@@ -12,36 +12,37 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement('
-CREATE 
-    ALGORITHM = UNDEFINED 
-    DEFINER = `root`@`localhost` 
-    SQL SECURITY DEFINER
-VIEW `lilypad`.`qtyonorderpo` AS
-    SELECT 
-        `lilypad`.`part`.`id` AS `PARTID`,
-        `lilypad`.`receipt`.`locationGroupId` AS `LOCATIONGROUPID`,
-        COALESCE(SUM((CASE
-                    WHEN
-                        ((`lilypad`.`receiptitem`.`uomId` <> `lilypad`.`part`.`uomId`)
-                            AND (`lilypad`.`uomconversion`.`id` > 0))
-                    THEN
-                        ((`lilypad`.`receiptitem`.`qty` * `lilypad`.`uomconversion`.`multiply`) / `lilypad`.`uomconversion`.`factor`)
-                    ELSE `lilypad`.`receiptitem`.`qty`
-                END)),
-                0) AS `QTY`
-    FROM
-        (((`lilypad`.`receipt`
-        JOIN `lilypad`.`receiptitem` ON ((`lilypad`.`receipt`.`id` = `lilypad`.`receiptitem`.`receiptId`)))
-        JOIN `lilypad`.`part` ON ((`lilypad`.`part`.`id` = `lilypad`.`receiptitem`.`partId`)))
-        LEFT JOIN `lilypad`.`uomconversion` ON (((`lilypad`.`uomconversion`.`toUomId` = `lilypad`.`part`.`uomId`)
-            AND (`lilypad`.`uomconversion`.`fromUomId` = `lilypad`.`receiptitem`.`uomId`))))
-    WHERE
-        ((`lilypad`.`receipt`.`orderTypeId` = 10)
-            AND (`lilypad`.`receiptitem`.`statusId` IN (10, 20)))
-    GROUP BY `lilypad`.`part`.`id`, `lilypad`.`receipt`.`locationGroupId`
-');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyonorderpo`;');
 
+        DB::statement('
+    CREATE 
+        ALGORITHM = UNDEFINED 
+        DEFINER = `root`@`localhost` 
+        SQL SECURITY DEFINER
+    VIEW `' . env('DB_DATABASE') . '`.`qtyonorderpo` AS
+        SELECT 
+            `' . env('DB_DATABASE') . '`.`part`.`id` AS `PARTID`,
+            `' . env('DB_DATABASE') . '`.`receipt`.`locationGroupId` AS `LOCATIONGROUPID`,
+            COALESCE(SUM((CASE
+                        WHEN
+                            ((`' . env('DB_DATABASE') . '`.`receiptitem`.`uomId` <> `' . env('DB_DATABASE') . '`.`part`.`uomId`)
+                                AND (`' . env('DB_DATABASE') . '`.`uomconversion`.`id` > 0))
+                        THEN
+                            ((`' . env('DB_DATABASE') . '`.`receiptitem`.`qty` * `' . env('DB_DATABASE') . '`.`uomconversion`.`multiply`) / `' . env('DB_DATABASE') . '`.`uomconversion`.`factor`)
+                        ELSE `' . env('DB_DATABASE') . '`.`receiptitem`.`qty`
+                    END)),
+                    0) AS `QTY`
+        FROM
+            (((`' . env('DB_DATABASE') . '`.`receipt`
+            JOIN `' . env('DB_DATABASE') . '`.`receiptitem` ON ((`' . env('DB_DATABASE') . '`.`receipt`.`id` = `' . env('DB_DATABASE') . '`.`receiptitem`.`receiptId`)))
+            JOIN `' . env('DB_DATABASE') . '`.`part` ON ((`' . env('DB_DATABASE') . '`.`part`.`id` = `' . env('DB_DATABASE') . '`.`receiptitem`.`partId`)))
+            LEFT JOIN `' . env('DB_DATABASE') . '`.`uomconversion` ON (((`' . env('DB_DATABASE') . '`.`uomconversion`.`toUomId` = `' . env('DB_DATABASE') . '`.`part`.`uomId`)
+                AND (`' . env('DB_DATABASE') . '`.`uomconversion`.`fromUomId` = `' . env('DB_DATABASE') . '`.`receiptitem`.`uomId`))))
+        WHERE
+            ((`' . env('DB_DATABASE') . '`.`receipt`.`orderTypeId` = 10)
+                AND (`' . env('DB_DATABASE') . '`.`receiptitem`.`statusId` IN (10, 20)))
+        GROUP BY `' . env('DB_DATABASE') . '`.`part`.`id`, `' . env('DB_DATABASE') . '`.`receipt`.`locationGroupId`
+');
     }
 
     /**
@@ -49,6 +50,6 @@ VIEW `lilypad`.`qtyonorderpo` AS
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtyonorderpo_view');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyonorderpo`;');
     }
 };

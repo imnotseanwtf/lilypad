@@ -12,8 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-            DB::statement('
-            CREATE VIEW lilypad.qtyinventory AS
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyinventory`;');
+
+        DB::statement('
+            CREATE VIEW ' . env('DB_DATABASE') . '.qtyinventory AS
             SELECT 
                 totalqty.PARTID AS PARTID,
                 totalqty.LOCATIONGROUPID AS LOCATIONGROUPID,
@@ -74,95 +76,95 @@ return new class extends Migration
             FROM
                 (SELECT 
                     \'QTYONHAND\' AS t,
-                        lilypad.qtyonhand.PARTID AS PARTID,
-                        lilypad.qtyonhand.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyonhand.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyonhand.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyonhand.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyonhand.QTY AS QTY
                 FROM
-                    lilypad.qtyonhand UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtyonhand UNION SELECT 
                     \'QTYALLOCATED\' AS t,
-                        lilypad.qtyallocated.PARTID AS PARTID,
-                        lilypad.qtyallocated.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyallocated.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyallocated.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyallocated.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyallocated.QTY AS QTY
                 FROM
-                    lilypad.qtyallocated UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtyallocated UNION SELECT 
                     \'QTYALLOCATEDPO\' AS t,
-                        lilypad.qtyallocatedpo.PARTID AS PARTID,
-                        lilypad.qtyallocatedpo.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyallocatedpo.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyallocatedpo.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyallocatedpo.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyallocatedpo.QTY AS QTY
                 FROM
-                    lilypad.qtyallocatedpo UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtyallocatedpo UNION SELECT 
                     \'QTYALLOCATEDSO\' AS t,
-                        lilypad.qtyallocatedso.PARTID AS PARTID,
-                        lilypad.qtyallocatedso.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyallocatedso.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyallocatedso.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyallocatedso.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyallocatedso.QTY AS QTY
                 FROM
-                    lilypad.qtyallocatedso UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtyallocatedso UNION SELECT 
                     \'QTYALLOCATEDTORECEIVE\' AS t,
-                        lilypad.qtyallocatedtoreceive.PARTID AS PARTID,
-                        lilypad.qtyallocatedtoreceive.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyallocatedtoreceive.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyallocatedtoreceive.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyallocatedtoreceive.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyallocatedtoreceive.QTY AS QTY
                 FROM
-                    lilypad.qtyallocatedtoreceive UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtyallocatedtoreceive UNION SELECT 
                     \'QTYALLOCATEDTOSEND\' AS t,
-                        lilypad.qtyallocatedtosend.PARTID AS PARTID,
-                        lilypad.qtyallocatedtosend.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyallocatedtosend.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyallocatedtosend.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyallocatedtosend.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyallocatedtosend.QTY AS QTY
                 FROM
-                    lilypad.qtyallocatedtosend UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtyallocatedtosend UNION SELECT 
                     \'QTYALLOCATEDMO\' AS t,
-                        lilypad.qtyallocatedmo.PARTID AS PARTID,
-                        lilypad.qtyallocatedmo.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyallocatedmo.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyallocatedmo.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyallocatedmo.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyallocatedmo.QTY AS QTY
                 FROM
-                    lilypad.qtyallocatedmo UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtyallocatedmo UNION SELECT 
                     \'QTYNOTAVAILABLE\' AS t,
-                        lilypad.qtynotavailable.PARTID AS PARTID,
-                        lilypad.qtynotavailable.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtynotavailable.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtynotavailable.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtynotavailable.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtynotavailable.QTY AS QTY
                 FROM
-                    lilypad.qtynotavailable UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtynotavailable UNION SELECT 
                     \'QTYNOTAVAILABLETOPICK\' AS t,
-                        lilypad.qtynotavailabletopick.PARTID AS PARTID,
-                        lilypad.qtynotavailabletopick.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtynotavailabletopick.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtynotavailabletopick.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtynotavailabletopick.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtynotavailabletopick.QTY AS QTY
                 FROM
-                    lilypad.qtynotavailabletopick UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtynotavailabletopick UNION SELECT 
                     \'QTYDROPSHIP\' AS t,
-                        lilypad.qtydropship.PARTID AS PARTID,
-                        lilypad.qtydropship.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtydropship.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtydropship.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtydropship.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtydropship.QTY AS QTY
                 FROM
-                    lilypad.qtydropship UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtydropship UNION SELECT 
                     \'QTYONORDERPO\' AS t,
-                        lilypad.qtyonorderpo.PARTID AS PARTID,
-                        lilypad.qtyonorderpo.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyonorderpo.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyonorderpo.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyonorderpo.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyonorderpo.QTY AS QTY
                 FROM
-                    lilypad.qtyonorderpo UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtyonorderpo UNION SELECT 
                     \'QTYONORDERSO\' AS t,
-                        lilypad.qtyonorderso.PARTID AS PARTID,
-                        lilypad.qtyonorderso.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyonorderso.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyonorderso.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyonorderso.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyonorderso.QTY AS QTY
                 FROM
-                    lilypad.qtyonorderso UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtyonorderso UNION SELECT 
                     \'QTYONORDERTORECEIVE\' AS t,
-                        lilypad.qtyonordertoreceive.PARTID AS PARTID,
-                        lilypad.qtyonordertoreceive.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyonordertoreceive.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyonordertoreceive.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyonordertoreceive.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyonordertoreceive.QTY AS QTY
                 FROM
-                    lilypad.qtyonordertoreceive UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtyonordertoreceive UNION SELECT 
                     \'QTYONORDERTOSEND\' AS t,
-                        lilypad.qtyonordertosend.PARTID AS PARTID,
-                        lilypad.qtyonordertosend.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyonordertosend.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyonordertosend.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyonordertosend.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyonordertosend.QTY AS QTY
                 FROM
-                    lilypad.qtyonordertosend UNION SELECT 
+                    ' . env('DB_DATABASE') . '.qtyonordertosend UNION SELECT 
                     \'QTYONORDERMO\' AS t,
-                        lilypad.qtyonordermo.PARTID AS PARTID,
-                        lilypad.qtyonordermo.LOCATIONGROUPID AS LOCATIONGROUPID,
-                        lilypad.qtyonordermo.QTY AS QTY
+                        ' . env('DB_DATABASE') . '.qtyonordermo.PARTID AS PARTID,
+                        ' . env('DB_DATABASE') . '.qtyonordermo.LOCATIONGROUPID AS LOCATIONGROUPID,
+                        ' . env('DB_DATABASE') . '.qtyonordermo.QTY AS QTY
                 FROM
-                    lilypad.qtyonordermo) totalQty
+                    ' . env('DB_DATABASE') . '.qtyonordermo) totalQty
             GROUP BY totalqty.PARTID, totalqty.LOCATIONGROUPID
         ');
     }
@@ -172,6 +174,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtyinventory_view');
+        DB::statement(' DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyonorder`;');
     }
 };

@@ -11,10 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ontrac_view', function (Blueprint $table) {
+        Schema::create('trackinginteger', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->integer('info');
+            $table->unsignedInteger('partTrackingId');
+            $table->unsignedBigInteger('tagId');
+            
+            $table->index(['partTrackingId', 'tagId'], 'Performance');
         });
+        
     }
 
     /**
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ontrac_view');
+        Schema::dropIfExists('tracking_integers');
     }
 };

@@ -60,6 +60,7 @@ return new class extends Migration
             $table->string('vendorContact', 30)->nullable();
             $table->unsignedInteger('vendorId');
             $table->string('vendorSO', 25)->nullable();
+            $table->string('customFields')->nullable();
 
             $table->unique('num', 'u_num');
             $table->index([
@@ -84,6 +85,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchase_orders');
+        Schema::dropIfExists('po');
     }
 };

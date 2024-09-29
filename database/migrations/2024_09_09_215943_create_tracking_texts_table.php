@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tagserial_view', function (Blueprint $table) {
+        Schema::create('trackingtext', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('info', 41)->nullable();
+            $table->unsignedInteger('partTrackingId')->nullable();
+            $table->unsignedBigInteger('tagId');
+            
+            $table->index(['partTrackingId', 'tagId'], 'Performance');
         });
     }
 
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tagserial_view');
+        Schema::dropIfExists('tracking_texts');
     }
 };

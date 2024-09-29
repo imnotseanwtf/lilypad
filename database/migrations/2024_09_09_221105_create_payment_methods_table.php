@@ -11,10 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fedex_view', function (Blueprint $table) {
+        Schema::create('paymentmethod', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->boolean('active');
+            $table->boolean('editable');
+            $table->string('name', 30)->nullable()->unique();
+            $table->unsignedInteger('typeId');
+        
+            $table->index('typeId', 'Performance');
         });
+        
     }
 
     /**
@@ -22,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fedex_view');
+        Schema::dropIfExists('payment_methods');
     }
 };

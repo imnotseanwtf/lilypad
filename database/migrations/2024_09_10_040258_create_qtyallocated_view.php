@@ -12,55 +12,57 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement(' DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyallocated`;');
+
         DB::statement('
-        CREATE VIEW lilypad.qtyallocated AS
-        SELECT 
-            totalqty.PARTID AS PARTID,
-            totalqty.LOCATIONGROUPID AS LOCATIONGROUPID,
-            COALESCE(SUM(totalqty.QTY), 0) AS QTY
+    CREATE VIEW `' . env('DB_DATABASE') . '`.`qtyallocated` AS
+    SELECT 
+        totalqty.PARTID AS PARTID,
+        totalqty.LOCATIONGROUPID AS LOCATIONGROUPID,
+        COALESCE(SUM(totalqty.QTY), 0) AS QTY
+    FROM
+        (SELECT 
+            \'SO\' AS t,
+            `qtyallocatedso`.`PARTID` AS `PARTID`,
+            `qtyallocatedso`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
+            `qtyallocatedso`.`QTY` AS `QTY`
         FROM
-            (SELECT 
-                \'SO\' AS t,
-                    lilypad.qtyallocatedso.PARTID AS PARTID,
-                    lilypad.qtyallocatedso.LOCATIONGROUPID AS LOCATIONGROUPID,
-                    lilypad.qtyallocatedso.QTY AS QTY
-            FROM
-                lilypad.qtyallocatedso 
-            UNION 
-            SELECT 
-                \'PO\' AS t,
-                    lilypad.qtyallocatedpo.PARTID AS PARTID,
-                    lilypad.qtyallocatedpo.LOCATIONGROUPID AS LOCATIONGROUPID,
-                    lilypad.qtyallocatedpo.QTY AS QTY
-            FROM
-                lilypad.qtyallocatedpo 
-            UNION 
-            SELECT 
-                \'TOSend\' AS t,
-                    lilypad.qtyallocatedtosend.PARTID AS PARTID,
-                    lilypad.qtyallocatedtosend.LOCATIONGROUPID AS LOCATIONGROUPID,
-                    lilypad.qtyallocatedtosend.QTY AS QTY
-            FROM
-                lilypad.qtyallocatedtosend 
-            UNION 
-            SELECT 
-                \'TOReceive\' AS t,
-                    lilypad.qtyallocatedtoreceive.PARTID AS PARTID,
-                    lilypad.qtyallocatedtoreceive.LOCATIONGROUPID AS LOCATIONGROUPID,
-                    lilypad.qtyallocatedtoreceive.QTY AS QTY
-            FROM
-                lilypad.qtyallocatedtoreceive 
-            UNION 
-            SELECT 
-                \'MO\' AS t,
-                    lilypad.qtyallocatedmo.PARTID AS PARTID,
-                    lilypad.qtyallocatedmo.LOCATIONGROUPID AS LOCATIONGROUPID,
-                    lilypad.qtyallocatedmo.QTY AS QTY
-            FROM
-                lilypad.qtyallocatedmo
-            ) totalQty
-        GROUP BY totalqty.PARTID, totalqty.LOCATIONGROUPID
-    ');
+            `qtyallocatedso` 
+        UNION 
+        SELECT 
+            \'PO\' AS t,
+            `qtyallocatedpo`.`PARTID` AS `PARTID`,
+            `qtyallocatedpo`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
+            `qtyallocatedpo`.`QTY` AS `QTY`
+        FROM
+            `qtyallocatedpo` 
+        UNION 
+        SELECT 
+            \'TOSend\' AS t,
+            `qtyallocatedtosend`.`PARTID` AS `PARTID`,
+            `qtyallocatedtosend`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
+            `qtyallocatedtosend`.`QTY` AS `QTY`
+        FROM
+            `qtyallocatedtosend` 
+        UNION 
+        SELECT 
+            \'TOReceive\' AS t,
+            `qtyallocatedtoreceive`.`PARTID` AS `PARTID`,
+            `qtyallocatedtoreceive`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
+            `qtyallocatedtoreceive`.`QTY` AS `QTY`
+        FROM
+            `qtyallocatedtoreceive` 
+        UNION 
+        SELECT 
+            \'MO\' AS t,
+            `qtyallocatedmo`.`PARTID` AS `PARTID`,
+            `qtyallocatedmo`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
+            `qtyallocatedmo`.`QTY` AS `QTY`
+        FROM
+            `qtyallocatedmo`
+        ) totalQty
+    GROUP BY totalqty.PARTID, totalqty.LOCATIONGROUPID;
+');
     }
 
     /**
@@ -68,6 +70,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtyallocated_view');
+        DB::statement(' DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyallocated`;');
     }
 };

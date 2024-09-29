@@ -12,37 +12,39 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement(
-            'CREATE 
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyallocatedmo`;');
+
+        DB::statement('
+    CREATE 
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
-VIEW `lilypad`.`qtyallocatedmo` AS
+    VIEW `' . env('DB_DATABASE') . '`.`qtyallocatedmo` AS
     SELECT 
-        `lilypad`.`part`.`id` AS `PARTID`,
-        `lilypad`.`wo`.`locationGroupId` AS `LOCATIONGROUPID`,
+        `part`.`id` AS `PARTID`,
+        `wo`.`locationGroupId` AS `LOCATIONGROUPID`,
         COALESCE(SUM((CASE
                     WHEN
-                        ((`lilypad`.`woitem`.`uomId` <> `lilypad`.`part`.`uomId`)
-                            AND (`lilypad`.`uomconversion`.`id` > 0))
+                        ((`woitem`.`uomId` <> `part`.`uomId`)
+                            AND (`uomconversion`.`id` > 0))
                     THEN
-                        ((`lilypad`.`woitem`.`qtyTarget` * `lilypad`.`uomconversion`.`multiply`) / `lilypad`.`uomconversion`.`factor`)
-                    ELSE `lilypad`.`woitem`.`qtyTarget`
+                        ((`woitem`.`qtyTarget` * `uomconversion`.`multiply`) / `uomconversion`.`factor`)
+                    ELSE `woitem`.`qtyTarget`
                 END)),
                 0) AS `QTY`
     FROM
-        (((`lilypad`.`part`
-        JOIN `lilypad`.`woitem` ON ((`lilypad`.`part`.`id` = `lilypad`.`woitem`.`partId`)))
-        JOIN `lilypad`.`wo` ON ((`lilypad`.`wo`.`id` = `lilypad`.`woitem`.`woId`)))
-        LEFT JOIN `lilypad`.`uomconversion` ON (((`lilypad`.`uomconversion`.`toUomId` = `lilypad`.`part`.`uomId`)
-            AND (`lilypad`.`uomconversion`.`fromUomId` = `lilypad`.`woitem`.`uomId`))))
+        `part`
+    JOIN `woitem` ON `part`.`id` = `woitem`.`partId`
+    JOIN `wo` ON `wo`.`id` = `woitem`.`woId`
+    LEFT JOIN `uomconversion` ON `uomconversion`.`toUomId` = `part`.`uomId`
+        AND `uomconversion`.`fromUomId` = `woitem`.`uomId`
     WHERE
-        ((`lilypad`.`wo`.`statusId` < 40)
-            AND (`lilypad`.`woitem`.`typeId` IN (20 , 30))
-            AND (`lilypad`.`part`.`typeId` = 10))
-    GROUP BY `lilypad`.`part`.`id` , `lilypad`.`wo`.`locationGroupId`
-        '
-        );
+        (`wo`.`statusId` < 40)
+        AND (`woitem`.`typeId` IN (20, 30))
+        AND (`part`.`typeId` = 10)
+    GROUP BY `part`.`id`, `wo`.`locationGroupId`;
+');
+
     }
 
     /**
@@ -50,6 +52,6 @@ VIEW `lilypad`.`qtyallocatedmo` AS
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtyallocatedmo_view');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyallocatedmo`;');
     }
 };

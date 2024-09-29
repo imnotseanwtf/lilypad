@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,10 +12,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trackdate_view', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`trackdate`;');
+
+        DB::statement('
+    CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+    VIEW `' . env('DB_DATABASE') . '`.`trackdate` AS
+    SELECT 
+        td.tagId AS TAGID,
+        pt.abbr AS ABBR,
+        td.info AS INFO
+    FROM `' . env('DB_DATABASE') . '`.trackingdate td
+    JOIN `' . env('DB_DATABASE') . '`.parttracking pt ON pt.id = td.partTrackingId
+');
+
+
     }
 
     /**
@@ -22,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trackdate_view');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`trackdate`;');
     }
 };

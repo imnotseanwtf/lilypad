@@ -12,22 +12,25 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement(' DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyonhand`;');
+
         DB::statement('
-            CREATE VIEW lilypad.qtyonhand AS
-            SELECT 
-                lilypad.tag.partId AS PARTID,
-                lilypad.location.locationGroupId AS LOCATIONGROUPID,
-                COALESCE(SUM(lilypad.tag.qty), 0) AS QTY
-            FROM
-                lilypad.tag
-            JOIN lilypad.location 
-                ON lilypad.location.id = lilypad.tag.locationId
-            WHERE
-                lilypad.tag.typeId IN (30, 40)
-            GROUP BY 
-                lilypad.location.locationGroupId, 
-                lilypad.tag.partId
-        ');
+
+    CREATE VIEW `' . env('DB_DATABASE') . '`.`qtyonhand` AS
+    SELECT 
+        `tag`.`partId` AS `PARTID`,
+        `location`.`locationGroupId` AS `LOCATIONGROUPID`,
+        COALESCE(SUM(`tag`.`qty`), 0) AS `QTY`
+    FROM
+        `' . env('DB_DATABASE') . '`.`tag`
+    JOIN `' . env('DB_DATABASE') . '`.`location` 
+        ON `location`.`id` = `tag`.`locationId`
+    WHERE
+        `tag`.`typeId` IN (30, 40)
+    GROUP BY 
+        `location`.`locationGroupId`, 
+        `tag`.`partId`;
+');
     }
 
     /**
@@ -35,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtyonhand_view');
+        DB::statement(' DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyonhand`;');
     }
 };

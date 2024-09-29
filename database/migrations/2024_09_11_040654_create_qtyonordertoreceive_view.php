@@ -12,37 +12,38 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyonordertoreceive`;');
+
         DB::statement('
     CREATE 
         ALGORITHM = UNDEFINED 
         DEFINER = `root`@`localhost` 
         SQL SECURITY DEFINER
-    VIEW `lilypad`.`qtyonordertoreceive` AS
+    VIEW `' . env('DB_DATABASE') . '`.`qtyonordertoreceive` AS
         SELECT 
-            `lilypad`.`part`.`id` AS `PARTID`,
-            `lilypad`.`xo`.`fromLGId` AS `LOCATIONGROUPID`,
+            `' . env('DB_DATABASE') . '`.`part`.`id` AS `PARTID`,
+            `' . env('DB_DATABASE') . '`.`xo`.`fromLGId` AS `LOCATIONGROUPID`,
             COALESCE(SUM((CASE
                         WHEN
-                            ((`lilypad`.`xoitem`.`uomId` <> `lilypad`.`part`.`uomId`)
-                                AND (`lilypad`.`uomconversion`.`id` > 0))
+                            ((`' . env('DB_DATABASE') . '`.`xoitem`.`uomId` <> `' . env('DB_DATABASE') . '`.`part`.`uomId`)
+                                AND (`' . env('DB_DATABASE') . '`.`uomconversion`.`id` > 0))
                         THEN
-                            (((`lilypad`.`xoitem`.`qtyToFulfill` - `lilypad`.`xoitem`.`qtyFulfilled`) * `lilypad`.`uomconversion`.`multiply`) / `lilypad`.`uomconversion`.`factor`)
-                        ELSE (`lilypad`.`xoitem`.`qtyToFulfill` - `lilypad`.`xoitem`.`qtyFulfilled`)
+                            (((`' . env('DB_DATABASE') . '`.`xoitem`.`qtyToFulfill` - `' . env('DB_DATABASE') . '`.`xoitem`.`qtyFulfilled`) * `' . env('DB_DATABASE') . '`.`uomconversion`.`multiply`) / `' . env('DB_DATABASE') . '`.`uomconversion`.`factor`)
+                        ELSE (`' . env('DB_DATABASE') . '`.`xoitem`.`qtyToFulfill` - `' . env('DB_DATABASE') . '`.`xoitem`.`qtyFulfilled`)
                     END)),
                     0) AS `QTY`
         FROM
-            (((`lilypad`.`part`
-            JOIN `lilypad`.`xoitem` ON ((`lilypad`.`part`.`id` = `lilypad`.`xoitem`.`partId`)))
-            JOIN `lilypad`.`xo` ON ((`lilypad`.`xo`.`id` = `lilypad`.`xoitem`.`xoId`)))
-            LEFT JOIN `lilypad`.`uomconversion` ON (((`lilypad`.`uomconversion`.`toUomId` = `lilypad`.`part`.`uomId`)
-                AND (`lilypad`.`uomconversion`.`fromUomId` = `lilypad`.`xoitem`.`uomId`))))
+            (((`' . env('DB_DATABASE') . '`.`part`
+            JOIN `' . env('DB_DATABASE') . '`.`xoitem` ON ((`' . env('DB_DATABASE') . '`.`part`.`id` = `' . env('DB_DATABASE') . '`.`xoitem`.`partId`)))
+            JOIN `' . env('DB_DATABASE') . '`.`xo` ON ((`' . env('DB_DATABASE') . '`.`xo`.`id` = `' . env('DB_DATABASE') . '`.`xoitem`.`xoId`)))
+            LEFT JOIN `' . env('DB_DATABASE') . '`.`uomconversion` ON (((`' . env('DB_DATABASE') . '`.`uomconversion`.`toUomId` = `' . env('DB_DATABASE') . '`.`part`.`uomId`)
+                AND (`' . env('DB_DATABASE') . '`.`uomconversion`.`fromUomId` = `' . env('DB_DATABASE') . '`.`xoitem`.`uomId`))))
         WHERE
-            ((`lilypad`.`xo`.`statusId` IN (20 , 30, 40, 50, 60))
-                AND (`lilypad`.`xoitem`.`statusId` IN (10 , 20, 30, 40, 50))
-                AND (`lilypad`.`xoitem`.`typeId` = 20))
-        GROUP BY `lilypad`.`part`.`id`, `lilypad`.`xo`.`fromLGId`;
+            ((`' . env('DB_DATABASE') . '`.`xo`.`statusId` IN (20 , 30, 40, 50, 60))
+                AND (`' . env('DB_DATABASE') . '`.`xoitem`.`statusId` IN (10 , 20, 30, 40, 50))
+                AND (`' . env('DB_DATABASE') . '`.`xoitem`.`typeId` = 20))
+        GROUP BY `' . env('DB_DATABASE') . '`.`part`.`id`, `' . env('DB_DATABASE') . '`.`xo`.`fromLGId`
 ');
-
     }
 
     /**
@@ -50,6 +51,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtyonordertoreceive_view');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyonordertoreceive`;');
     }
 };

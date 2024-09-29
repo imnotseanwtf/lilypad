@@ -11,11 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('serial', function (Blueprint $table) {
+        Schema::create('trackingdate', function (Blueprint $table) {
             $table->id();
-            $table->boolean('committedFlag')->default(true);
-            $table->foreignId('tagId')->constrained('tag');
+            $table->dateTime('info')->nullable();
+            $table->unsignedInteger('partTrackingId');
+            $table->unsignedBigInteger('tagId');
+            
+            $table->index(['partTrackingId', 'tagId'], 'Performance');
         });
+        
     }
 
     /**
@@ -23,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('serials');
+        Schema::dropIfExists('tracking_dates');
     }
 };

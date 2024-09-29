@@ -12,36 +12,40 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement(
-            'CREATE 
+        DB::statement(' DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyallocatedtoreceive`;');
+
+        DB::statement('
+    CREATE 
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
-VIEW `lilypad`.`qtyallocatedtoreceive` AS
+    VIEW `' . env('DB_DATABASE') . '`.`qtyallocatedtoreceive` AS
     SELECT 
-        `lilypad`.`part`.`id` AS `PARTID`,
-        `lilypad`.`xo`.`shipToLGId` AS `LOCATIONGROUPID`,
+        `part`.`id` AS `PARTID`,
+        `xo`.`shipToLGId` AS `LOCATIONGROUPID`,
         COALESCE(SUM((CASE
                     WHEN
-                        ((`lilypad`.`xoitem`.`uomId` <> `lilypad`.`part`.`uomId`)
-                            AND (`lilypad`.`uomconversion`.`id` > 0))
+                        ((`xoitem`.`uomId` <> `part`.`uomId`)
+                            AND (`uomconversion`.`id` > 0))
                     THEN
-                        (((`lilypad`.`xoitem`.`qtyToFulfill` - `lilypad`.`xoitem`.`qtyFulfilled`) * `lilypad`.`uomconversion`.`multiply`) / `lilypad`.`uomconversion`.`factor`)
-                    ELSE (`lilypad`.`xoitem`.`qtyToFulfill` - `lilypad`.`xoitem`.`qtyFulfilled`)
+                        (((`xoitem`.`qtyToFulfill` - `xoitem`.`qtyFulfilled`) * `uomconversion`.`multiply`) / `uomconversion`.`factor`)
+                    ELSE (`xoitem`.`qtyToFulfill` - `xoitem`.`qtyFulfilled`)
                 END)),
                 0) AS `QTY`
     FROM
-        (((`lilypad`.`part`
-        JOIN `lilypad`.`xoitem` ON ((`lilypad`.`part`.`id` = `lilypad`.`xoitem`.`partId`)))
-        JOIN `lilypad`.`xo` ON ((`lilypad`.`xo`.`id` = `lilypad`.`xoitem`.`xoId`)))
-        LEFT JOIN `lilypad`.`uomconversion` ON (((`lilypad`.`uomconversion`.`toUomId` = `lilypad`.`part`.`uomId`)
-            AND (`lilypad`.`uomconversion`.`fromUomId` = `lilypad`.`xoitem`.`uomId`))))
+        `part`
+    JOIN `xoitem` ON `part`.`id` = `xoitem`.`partId`
+    JOIN `xo` ON `xo`.`id` = `xoitem`.`xoId`
+    LEFT JOIN `uomconversion` ON `uomconversion`.`toUomId` = `part`.`uomId`
+        AND `uomconversion`.`fromUomId` = `xoitem`.`uomId`
     WHERE
-        ((`lilypad`.`xo`.`statusId` IN (20 , 30, 40, 50, 60))
-            AND (`lilypad`.`xoitem`.`statusId` IN (10 , 20, 30, 40, 50))
-            AND (`lilypad`.`xoitem`.`typeId` = 20)
-            AND (`lilypad`.`part`.`typeId` = 10))
-    GROUP BY `lilypad`.`part`.`id` , `lilypad`.`xo`.`shipToLGId`');
+        (`xo`.`statusId` IN (20, 30, 40, 50, 60))
+        AND (`xoitem`.`statusId` IN (10, 20, 30, 40, 50))
+        AND (`xoitem`.`typeId` = 20)
+        AND (`part`.`typeId` = 10)
+    GROUP BY `part`.`id`, `xo`.`shipToLGId`;
+');
+
     }
 
     /**
@@ -49,6 +53,6 @@ VIEW `lilypad`.`qtyallocatedtoreceive` AS
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtyallocatedtoreceive_view');
+        DB::statement(' DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyallocatedtoreceive`;');
     }
 };

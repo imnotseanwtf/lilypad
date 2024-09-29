@@ -12,26 +12,30 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyallocatedso`;');
+
         DB::statement('
-    CREATE VIEW lilypad.qtyallocatedso AS
+    CREATE VIEW `' . env('DB_DATABASE') . '`.`qtyallocatedso` AS
     SELECT 
-        lilypad.part.id AS PARTID,
-        lilypad.so.locationGroupId AS LOCATIONGROUPID,
-        COALESCE(SUM(lilypad.soitem.qtyToFulfill - lilypad.soitem.qtyFulfilled), 0) AS QTY
+        `part`.`id` AS `PARTID`,
+        `so`.`locationGroupId` AS `LOCATIONGROUPID`,
+        COALESCE(SUM(`soitem`.`qtyToFulfill` - `soitem`.`qtyFulfilled`), 0) AS `QTY`
     FROM
-        lilypad.part
-    JOIN lilypad.product 
-        ON lilypad.part.id = lilypad.product.partId    JOIN lilypad.soitem 
-        ON lilypad.product.id = lilypad.soitem.productId
-    JOIN lilypad.so 
-        ON lilypad.so.id = lilypad.soitem.soId
+        `part`
+    JOIN `product` 
+        ON `part`.`id` = `product`.`partId`    
+    JOIN `soitem` 
+        ON `product`.`id` = `soitem`.`productId`
+    JOIN `so` 
+        ON `so`.`id` = `soitem`.`soId`
     WHERE
-        lilypad.so.statusId IN (20, 25)
-        AND lilypad.soitem.statusId IN (10, 14, 20, 30, 40)
-        AND lilypad.soitem.typeId IN (10, 12)
-        AND lilypad.part.typeId = 10
-    GROUP BY lilypad.part.id, lilypad.so.locationGroupId
+        `so`.`statusId` IN (20, 25)
+        AND `soitem`.`statusId` IN (10, 14, 20, 30, 40)
+        AND `soitem`.`typeId` IN (10, 12)
+        AND `part`.`typeId` = 10
+    GROUP BY `part`.`id`, `so`.`locationGroupId`;
 ');
+
     }
 
     /**
@@ -39,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtyallocatedso_view');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyallocatedso`;');
     }
 };

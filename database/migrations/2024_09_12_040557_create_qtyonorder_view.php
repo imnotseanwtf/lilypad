@@ -12,50 +12,62 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyonorder`;');
+
         DB::statement('
-CREATE 
-    ALGORITHM = UNDEFINED 
-    DEFINER = `root`@`localhost` 
-    SQL SECURITY DEFINER
-VIEW `lilypad`.`qtyonorder` AS
-    SELECT 
-        `totalqty`.`PARTID` AS `PARTID`,
-        `totalqty`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
-        COALESCE(SUM(`totalqty`.`QTY`), 0) AS `QTY`
-    FROM
-        (SELECT 
-            \'SO\' AS `t`,
-                `lilypad`.`qtyonorderso`.`PARTID` AS `PARTID`,
-                `lilypad`.`qtyonorderso`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
-                `lilypad`.`qtyonorderso`.`QTY` AS `QTY`
-        FROM
-            `lilypad`.`qtyonorderso` UNION SELECT 
-            \'PO\' AS `t`,
-                `lilypad`.`qtyonorderpo`.`PARTID` AS `PARTID`,
-                `lilypad`.`qtyonorderpo`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
-                `lilypad`.`qtyonorderpo`.`QTY` AS `QTY`
-        FROM
-            `lilypad`.`qtyonorderpo` UNION SELECT 
-            \'TOSend\' AS `t`,
-                `lilypad`.`qtyonordertosend`.`PARTID` AS `PARTID`,
-                `lilypad`.`qtyonordertosend`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
-                `lilypad`.`qtyonordertosend`.`QTY` AS `QTY`
-        FROM
-            `lilypad`.`qtyonordertosend` UNION SELECT 
-            \'TOReceive\' AS `t`,
-                `lilypad`.`qtyonordertoreceive`.`PARTID` AS `PARTID`,
-                `lilypad`.`qtyonordertoreceive`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
-                `lilypad`.`qtyonordertoreceive`.`QTY` AS `QTY`
-        FROM
-            `lilypad`.`qtyonordertoreceive` UNION SELECT 
-            \'MO\' AS `t`,
-                `lilypad`.`qtyonordermo`.`PARTID` AS `PARTID`,
-                `lilypad`.`qtyonordermo`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
-                `lilypad`.`qtyonordermo`.`QTY` AS `QTY`
-        FROM
-            `lilypad`.`qtyonordermo`) `totalQty`
-    GROUP BY `totalqty`.`PARTID`, `totalqty`.`LOCATIONGROUPID`
-');
+            CREATE 
+            ALGORITHM = UNDEFINED 
+            DEFINER = `root`@`localhost` 
+            SQL SECURITY DEFINER
+            VIEW `' . env('DB_DATABASE') . '`.`qtyonorder` AS
+            SELECT 
+                `totalqty`.`PARTID` AS `PARTID`,
+                `totalqty`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
+                COALESCE(SUM(`totalqty`.`QTY`), 0) AS `QTY`
+            FROM
+            (
+                SELECT 
+                    \'SO\' AS `t`,
+                    `' . env('DB_DATABASE') . '`.`qtyonorderso`.`PARTID` AS `PARTID`,
+                    `' . env('DB_DATABASE') . '`.`qtyonorderso`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
+                    `' . env('DB_DATABASE') . '`.`qtyonorderso`.`QTY` AS `QTY`
+                FROM
+                    `' . env('DB_DATABASE') . '`.`qtyonorderso`
+                UNION 
+                SELECT 
+                    \'PO\' AS `t`,
+                    `' . env('DB_DATABASE') . '`.`qtyonorderpo`.`PARTID` AS `PARTID`,
+                    `' . env('DB_DATABASE') . '`.`qtyonorderpo`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
+                    `' . env('DB_DATABASE') . '`.`qtyonorderpo`.`QTY` AS `QTY`
+                FROM
+                    `' . env('DB_DATABASE') . '`.`qtyonorderpo`
+                UNION 
+                SELECT 
+                    \'TOSend\' AS `t`,
+                    `' . env('DB_DATABASE') . '`.`qtyonordertosend`.`PARTID` AS `PARTID`,
+                    `' . env('DB_DATABASE') . '`.`qtyonordertosend`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
+                    `' . env('DB_DATABASE') . '`.`qtyonordertosend`.`QTY` AS `QTY`
+                FROM
+                    `' . env('DB_DATABASE') . '`.`qtyonordertosend`
+                UNION 
+                SELECT 
+                    \'TOReceive\' AS `t`,
+                    `' . env('DB_DATABASE') . '`.`qtyonordertoreceive`.`PARTID` AS `PARTID`,
+                    `' . env('DB_DATABASE') . '`.`qtyonordertoreceive`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
+                    `' . env('DB_DATABASE') . '`.`qtyonordertoreceive`.`QTY` AS `QTY`
+                FROM
+                    `' . env('DB_DATABASE') . '`.`qtyonordertoreceive`
+                UNION 
+                SELECT 
+                    \'MO\' AS `t`,
+                    `' . env('DB_DATABASE') . '`.`qtyonordermo`.`PARTID` AS `PARTID`,
+                    `' . env('DB_DATABASE') . '`.`qtyonordermo`.`LOCATIONGROUPID` AS `LOCATIONGROUPID`,
+                    `' . env('DB_DATABASE') . '`.`qtyonordermo`.`QTY` AS `QTY`
+                FROM
+                    `' . env('DB_DATABASE') . '`.`qtyonordermo`
+            ) `totalQty`
+            GROUP BY `totalqty`.`PARTID`, `totalqty`.`LOCATIONGROUPID`
+        ');
 
     }
 
@@ -64,6 +76,6 @@ VIEW `lilypad`.`qtyonorder` AS
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtyonorder_view');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyonorder`;');
     }
 };

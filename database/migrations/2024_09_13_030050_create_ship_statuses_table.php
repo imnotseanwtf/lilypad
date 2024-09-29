@@ -18,18 +18,13 @@ return new class extends Migration
         });
 
 
-        DB::table('shipstatus')->insert(
-            [
-                'id' => 40,
-                'name' => 'Cancelled',
-                'id' => 10,
-                'name' => 'Entered',
-                'id' => 20,
-                'name' => 'Packed',
-                'id' => 30,
-                'name' => 'Shipped',
-            ]
-        );
+        DB::table('shipstatus')->insert([
+            ['id' => 40, 'name' => 'Cancelled'],
+            ['id' => 10, 'name' => 'Entered'],
+            ['id' => 20, 'name' => 'Packed'],
+            ['id' => 30, 'name' => 'Shipped'],
+        ]);
+        
     }
 
     /**

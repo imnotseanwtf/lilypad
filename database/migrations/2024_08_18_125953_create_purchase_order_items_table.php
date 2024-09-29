@@ -37,6 +37,7 @@ return new class extends Migration
             $table->decimal('unitCost', 28, 9)->nullable();
             $table->unsignedBigInteger('uomId')->nullable();
             $table->string('vendorPartNum', 70)->nullable();
+            $table->string('customFields')->nullable();
 
             $table->index(['customerId', 'poId', 'partId', 'taxId', 'typeId', 'statusId', 'qbClassId'], 'Performance');
         });
@@ -47,6 +48,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchase_order_items');
+        Schema::dropIfExists('poitem');
     }
 };

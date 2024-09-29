@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pick_item_types');
+        Schema::dropIfExists('pickitemtype');
     }
 };

@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('unit_of_measure_types');
+        Schema::dropIfExists('uomtype');
     }
 };

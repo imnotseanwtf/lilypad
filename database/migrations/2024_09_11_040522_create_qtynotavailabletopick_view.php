@@ -12,24 +12,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-       DB::statement('CREATE 
-    ALGORITHM = UNDEFINED 
-    DEFINER = `root`@`localhost` 
-    SQL SECURITY DEFINER
-VIEW `lilypad`.`qtynotavailabletopick` AS
-    SELECT 
-        `lilypad`.`tag`.`partId` AS `PARTID`,
-        `lilypad`.`location`.`locationGroupId` AS `LOCATIONGROUPID`,
-        COALESCE(SUM((`lilypad`.`tag`.`qty` - `lilypad`.`tag`.`qtyCommitted`)),
-                0) AS `QTY`
-    FROM
-        (`lilypad`.`tag`
-        JOIN `lilypad`.`location` ON ((`lilypad`.`location`.`id` = `lilypad`.`tag`.`locationId`)))
-    WHERE
-        ((`lilypad`.`tag`.`typeId` IN (30 , 40))
-            AND (`lilypad`.`location`.`pickable` = 0)
-            AND (`lilypad`.`location`.`typeId` <> 100))
-    GROUP BY `lilypad`.`location`.`locationGroupId` , `lilypad`.`tag`.`partId`');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtynotavailabletopick`;');
+
+        DB::statement('
+        CREATE 
+        ALGORITHM = UNDEFINED 
+        DEFINER = `root`@`localhost` 
+        SQL SECURITY DEFINER
+        VIEW `' . env('DB_DATABASE') . '`.`qtynotavailabletopick` AS
+        SELECT 
+            `' . env('DB_DATABASE') . '`.`tag`.`partId` AS `PARTID`,
+            `' . env('DB_DATABASE') . '`.`location`.`locationGroupId` AS `LOCATIONGROUPID`,
+            COALESCE(SUM((`' . env('DB_DATABASE') . '`.`tag`.`qty` - `' . env('DB_DATABASE') . '`.`tag`.`qtyCommitted`)),
+                    0) AS `QTY`
+        FROM
+            (`' . env('DB_DATABASE') . '`.`tag`
+            JOIN `' . env('DB_DATABASE') . '`.`location` ON ((`' . env('DB_DATABASE') . '`.`location`.`id` = `' . env('DB_DATABASE') . '`.`tag`.`locationId`)))
+        WHERE
+            ((`' . env('DB_DATABASE') . '`.`tag`.`typeId` IN (30 , 40))
+                AND (`' . env('DB_DATABASE') . '`.`location`.`pickable` = 0)
+                AND (`' . env('DB_DATABASE') . '`.`location`.`typeId` <> 100))
+        GROUP BY `' . env('DB_DATABASE') . '`.`location`.`locationGroupId`, `' . env('DB_DATABASE') . '`.`tag`.`partId`');
     }
 
     /**
@@ -37,6 +40,6 @@ VIEW `lilypad`.`qtynotavailabletopick` AS
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtynotavailabletopick_view');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtynotavailabletopick`;');
     }
 };

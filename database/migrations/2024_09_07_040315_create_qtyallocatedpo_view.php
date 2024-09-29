@@ -12,37 +12,39 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyallocatedpo`;');
+
         DB::statement('
+
     CREATE ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
-    VIEW `lilypad`.`qtyallocatedpo` AS
+    VIEW `' . env('DB_DATABASE') . '`.`qtyallocatedpo` AS
     SELECT 
-        `lilypad`.`part`.`id` AS `PARTID`,
-        `lilypad`.`po`.`locationGroupId` AS `LOCATIONGROUPID`,
+        `part`.`id` AS `PARTID`,
+        `po`.`locationGroupId` AS `LOCATIONGROUPID`,
         COALESCE(SUM((CASE
                     WHEN
-                        ((`lilypad`.`poitem`.`uomId` <> `lilypad`.`part`.`uomId`)
-                            AND (`lilypad`.`uomconversion`.`id` > 0))
+                        ((`poitem`.`uomId` <> `part`.`uomId`)
+                            AND (`uomconversion`.`id` > 0))
                     THEN
-                        (((`lilypad`.`poitem`.`qtyToFulfill` - `lilypad`.`poitem`.`qtyFulfilled`) * `lilypad`.`uomconversion`.`multiply`) / `lilypad`.`uomconversion`.`factor`)
-                    ELSE (`lilypad`.`poitem`.`qtyToFulfill` - `lilypad`.`poitem`.`qtyFulfilled`)
+                        (((`poitem`.`qtyToFulfill` - `poitem`.`qtyFulfilled`) * `uomconversion`.`multiply`) / `uomconversion`.`factor`)
+                    ELSE (`poitem`.`qtyToFulfill` - `poitem`.`qtyFulfilled`)
                 END)),
                 0) AS `QTY`
     FROM
-        (((`lilypad`.`part`
-        JOIN `lilypad`.`poitem` ON ((`lilypad`.`part`.`id` = `lilypad`.`poitem`.`partId`)))
-        JOIN `lilypad`.`po` ON ((`lilypad`.`po`.`id` = `lilypad`.`poitem`.`poId`)))
-        LEFT JOIN `lilypad`.`uomconversion` ON (((`lilypad`.`uomconversion`.`toUomId` = `lilypad`.`part`.`uomId`)
-            AND (`lilypad`.`uomconversion`.`fromUomId` = `lilypad`.`poitem`.`uomId`))))
+        `part`
+    JOIN `poitem` ON `part`.`id` = `poitem`.`partId`
+    JOIN `po` ON `po`.`id` = `poitem`.`poId`
+    LEFT JOIN `uomconversion` ON `uomconversion`.`toUomId` = `part`.`uomId`
+        AND `uomconversion`.`fromUomId` = `poitem`.`uomId`
     WHERE
-        ((`lilypad`.`po`.`statusId` BETWEEN 20 AND 55)
-            AND (`lilypad`.`poitem`.`statusId` IN (10, 20, 30, 40, 45))
-            AND (`lilypad`.`poitem`.`typeId` IN (20, 30))
-            AND (`lilypad`.`part`.`typeId` = 10))
-    GROUP BY `lilypad`.`part`.`id`, `lilypad`.`po`.`locationGroupId`
+        (`po`.`statusId` BETWEEN 20 AND 55)
+        AND (`poitem`.`statusId` IN (10, 20, 30, 40, 45))
+        AND (`poitem`.`typeId` IN (20, 30))
+        AND (`part`.`typeId` = 10)
+    GROUP BY `part`.`id`, `po`.`locationGroupId`;
 ');
-
     }
 
     /**
@@ -50,6 +52,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('qtyallocatedpo_view');
+        DB::statement('DROP VIEW IF EXISTS `' . env('DB_DATABASE') . '`.`qtyallocatedpo`;');
     }
 };
